@@ -79,12 +79,24 @@ class TypeHintDeclarationSniff
     /**
      * @return array|null
      */
-    public function testMultipleTypesMethod(): ?array
+    public function testMultipleArrayTypesMethod(): ?array
     {
         if (true) {
             return [];
         }
 
         return null;
+    }
+
+    /**
+     * @return array|string|null
+     */
+    public function testMultipleTypesMethod(): array|string|null
+    {
+        if (true) {
+            return [];
+        }
+
+        return 'string' || null;
     }
 }

@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace BestIt\Sniffs\Functions;
 
-use BestIt\Sniffs\DefaultSniffIntegrationTestTrait;
+use BestIt\Sniffs\SniffCorrectFilesTrait;
+use BestIt\Sniffs\SniffWarningFilesTrait;
 use BestIt\Sniffs\TestTokenRegistrationTrait;
 use BestIt\SniffTestCase;
 use BestIt\TestRequiredConstantsTrait;
+
 use const T_PRIVATE;
 use const T_PROTECTED;
 use const T_PUBLIC;
@@ -21,7 +23,8 @@ use const T_VAR;
  */
 class NoSimplePropertyMethodSniffTest extends SniffTestCase
 {
-    use DefaultSniffIntegrationTestTrait;
+    use SniffCorrectFilesTrait;
+    use SniffWarningFilesTrait;
     use TestRequiredConstantsTrait;
     use TestTokenRegistrationTrait;
 
@@ -45,7 +48,7 @@ class NoSimplePropertyMethodSniffTest extends SniffTestCase
      *
      * @return array
      */
-    public function getRequiredConstantAsserts(): array
+    public static function getRequiredConstantAsserts(): array
     {
         return [
             'CODE_SHOULD_USE_PROPERTY' => [

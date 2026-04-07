@@ -84,9 +84,9 @@ class CodeWarning extends Exception
     /**
      * Returns the erroneous token.
      *
-     * @return array The "broken" token.
+     * @return null|array The "broken" token.
      */
-    public function getToken(): array
+    public function getToken(): ?array
     {
         return $this->token;
     }

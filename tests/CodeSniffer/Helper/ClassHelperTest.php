@@ -18,6 +18,10 @@ class ClassHelperTest extends TestCase
 {
     use FileHelperTrait;
 
+    private const SEARCH_START = 29;
+
+    private const TRAIT_POINTERS = [36, 42];
+
     /**
      * This is the relevant search start for the tests.
      *
@@ -36,7 +40,7 @@ class ClassHelperTest extends TestCase
     {
         $this->file = $this->getFile(__DIR__ . DIRECTORY_SEPARATOR . 'Fixtures/ClassHelper/TestClass.php');
 
-        $this->searchStart = 44;
+        $this->searchStart = self::SEARCH_START;
     }
 
     /**
@@ -46,7 +50,7 @@ class ClassHelperTest extends TestCase
      */
     public function testGetTraitUsePointers(): void
     {
-        static::assertSame([51, 57], ClassHelper::getTraitUsePointers($this->file, 44));
+        static::assertSame(self::TRAIT_POINTERS, ClassHelper::getTraitUsePointers($this->file, $this->searchStart));
     }
 
     /**

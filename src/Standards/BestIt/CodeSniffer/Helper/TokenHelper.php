@@ -14,4 +14,8 @@ use SlevomatCodingStandard\Helpers\TokenHelper as BaseHelper;
  */
 class TokenHelper extends BaseHelper
 {
+    public const ARRAY_TOKEN_CODES = [
+        T_ARRAY,
+        T_OPEN_SHORT_ARRAY,
+    ];
 }

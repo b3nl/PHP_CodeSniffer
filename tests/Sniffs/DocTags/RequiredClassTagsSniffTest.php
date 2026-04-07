@@ -4,7 +4,8 @@ declare(strict_types=1);
 
 namespace BestIt\Sniffs\DocTags;
 
-use BestIt\Sniffs\DefaultSniffIntegrationTestTrait;
+use BestIt\Sniffs\SniffCorrectFilesTrait;
+use BestIt\Sniffs\SniffErrorFilesTrait;
 use BestIt\Sniffs\TestTokenRegistrationTrait;
 use BestIt\SniffTestCase;
 use BestIt\TestRequiredConstantsTrait;
@@ -18,7 +19,8 @@ use PHP_CodeSniffer\Util\Tokens;
  */
 class RequiredClassTagsSniffTest extends SniffTestCase
 {
-    use DefaultSniffIntegrationTestTrait;
+    use SniffCorrectFilesTrait;
+    use SniffErrorFilesTrait;
     use TestRequiredConstantsTrait;
     use TestTokenRegistrationTrait;
 
@@ -37,7 +39,7 @@ class RequiredClassTagsSniffTest extends SniffTestCase
      *
      * @return array The required constants of a class. The second value is a possible value which should be checked.
      */
-    public function getRequiredConstantAsserts(): array
+    public static function getRequiredConstantAsserts(): array
     {
         return [
             'CODE_TAG_OCCURRENCE_MIN_PREFIX' => ['CODE_TAG_OCCURRENCE_MIN_PREFIX', 'TagOccurrenceMin'],

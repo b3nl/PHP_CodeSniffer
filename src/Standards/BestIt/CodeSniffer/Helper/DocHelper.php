@@ -7,7 +7,9 @@ namespace BestIt\CodeSniffer\Helper;
 use DomainException;
 use PHP_CodeSniffer\Files\File;
 use PHP_CodeSniffer\Util\Tokens;
+
 use function sprintf;
+
 use const T_DOC_COMMENT_CLOSE_TAG;
 
 /**
@@ -149,7 +151,7 @@ class DocHelper
             // Search till the next method, property, etc ...
             TokenHelper::findPreviousExcluding(
                 $this->file,
-                TokenHelper::$ineffectiveTokenCodes + Tokens::$methodPrefixes,
+                TokenHelper::INEFFECTIVE_TOKEN_CODES + Tokens::METHOD_MODIFIERS,
                 $this->stackPos - 1,
             ),
         );

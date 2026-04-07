@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace BestIt\Sniffs\Spacing;
 
-use BestIt\Sniffs\DefaultSniffIntegrationTestTrait;
+use BestIt\Sniffs\SniffCorrectFilesTrait;
+use BestIt\Sniffs\SniffErrorFilesTrait;
 use BestIt\Sniffs\TestTokenRegistrationTrait;
 use BestIt\SniffTestCase;
 use BestIt\TestRequiredConstantsTrait;
+
 use const T_NAMESPACE;
 
 /**
@@ -18,7 +20,8 @@ use const T_NAMESPACE;
  */
 class NamespaceSpacingSniffTest extends SniffTestCase
 {
-    use DefaultSniffIntegrationTestTrait;
+    use SniffCorrectFilesTrait;
+    use SniffErrorFilesTrait;
     use TestTokenRegistrationTrait;
     use TestRequiredConstantsTrait;
 
@@ -39,7 +42,7 @@ class NamespaceSpacingSniffTest extends SniffTestCase
      *
      * @return iterable
      */
-    public function getRequiredConstantAsserts(): iterable
+    public static function getRequiredConstantAsserts(): iterable
     {
         return [
             'CODE_INCORRECT_LINES_COUNT_BEFORE_NAMESPACE' => [

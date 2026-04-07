@@ -7,6 +7,7 @@ namespace BestIt\CodeSniffer\Helper;
 use PHP_CodeSniffer\Exceptions\RuntimeException;
 use PHPUnit\Framework\TestCase;
 use SlevomatCodingStandard\Helpers\TokenHelper as BaseHelper;
+
 use const DIRECTORY_SEPARATOR;
 use const T_DOC_COMMENT_TAG;
 use const T_IF;
@@ -44,6 +45,17 @@ class TokenHelperTest extends TestCase
         $this->searchStart = 16;
     }
 
+    public function testConstants(): void
+    {
+        static::assertSame(
+            TokenHelper::ARRAY_TOKEN_CODES,
+            [
+                T_ARRAY,
+                T_OPEN_SHORT_ARRAY,
+            ],
+        );
+    }
+
     /**
      * The doc comment should not contain any ifs!
      *
@@ -61,7 +73,7 @@ class TokenHelperTest extends TestCase
      */
     public function testFindNextAllPrematureEnd(): void
     {
-        static::assertSame([38], TokenHelper::findNextAll($this->file, [T_DOC_COMMENT_TAG], $this->searchStart, 39));
+        static::assertSame([31], TokenHelper::findNextAll($this->file, [T_DOC_COMMENT_TAG], $this->searchStart, 32));
     }
 
     /**
@@ -71,7 +83,7 @@ class TokenHelperTest extends TestCase
      */
     public function testFindNextAllSuccess(): void
     {
-        static::assertSame([38, 45], TokenHelper::findNextAll($this->file, [T_DOC_COMMENT_TAG], $this->searchStart));
+        static::assertSame([31, 38], TokenHelper::findNextAll($this->file, [T_DOC_COMMENT_TAG], $this->searchStart));
     }
 
     /**
@@ -82,7 +94,7 @@ class TokenHelperTest extends TestCase
     public function testFindPreviousContentNone(): void
     {
         static::assertNull(
-            TokenHelper::findPreviousContent($this->file, [T_DOC_COMMENT_TAG], '@foobar', 45),
+            TokenHelper::findPreviousContent($this->file, [T_DOC_COMMENT_TAG], '@foobar', 38),
         );
     }
 
@@ -94,8 +106,8 @@ class TokenHelperTest extends TestCase
     public function testFindPreviousContentSuccess(): void
     {
         static::assertSame(
-            38,
-            TokenHelper::findPreviousContent($this->file, [T_DOC_COMMENT_TAG], '@author', 45),
+            31,
+            TokenHelper::findPreviousContent($this->file, [T_DOC_COMMENT_TAG], '@author', 38),
         );
     }
 

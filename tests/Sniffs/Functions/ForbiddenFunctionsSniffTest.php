@@ -4,7 +4,8 @@ declare(strict_types=1);
 
 namespace BestIt\Sniffs\Functions;
 
-use BestIt\Sniffs\DefaultSniffIntegrationTestTrait;
+use BestIt\Sniffs\SniffCorrectFilesTrait;
+use BestIt\Sniffs\SniffWarningFilesTrait;
 use BestIt\SniffTestCase;
 
 /**
@@ -15,7 +16,8 @@ use BestIt\SniffTestCase;
  */
 class ForbiddenFunctionsSniffTest extends SniffTestCase
 {
-    use DefaultSniffIntegrationTestTrait;
+    use SniffCorrectFilesTrait;
+    use SniffWarningFilesTrait;
 
     private ForbiddenFunctionsSniff $testedClass;
 

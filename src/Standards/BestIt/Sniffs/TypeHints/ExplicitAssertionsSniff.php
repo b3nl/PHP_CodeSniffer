@@ -11,7 +11,7 @@ use PHPStan\PhpDocParser\Ast\Type\IntersectionTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\ThisTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\TypeNode;
 use PHPStan\PhpDocParser\Ast\Type\UnionTypeNode;
-use SlevomatCodingStandard\Helpers\Annotation\VariableAnnotation;
+use SlevomatCodingStandard\Helpers\Annotation;
 use SlevomatCodingStandard\Helpers\AnnotationHelper;
 use SlevomatCodingStandard\Helpers\IndentationHelper;
 use SlevomatCodingStandard\Helpers\TokenHelper;
@@ -82,22 +82,22 @@ class ExplicitAssertionsSniff implements Sniff
             $codePointer = $firstPointerOnPreviousLine;
         }
 
-        $variableAnnotations = AnnotationHelper::getAnnotationsByName($phpcsFile, $docCommentOpenPointer, '@var');
+        $variableAnnotations = AnnotationHelper::getAnnotations($phpcsFile, $docCommentOpenPointer, '@var');
         if (count($variableAnnotations) === 0) {
             return;
         }
 
-        /** @var VariableAnnotation $variableAnnotation */
+        /** @var Annotation $variableAnnotation */
         foreach (array_reverse($variableAnnotations) as $variableAnnotation) {
             if ($variableAnnotation->isInvalid()) {
                 continue;
             }
 
-            if ($variableAnnotation->getVariableName() === null) {
+            if ($variableAnnotation->getValue()->variableName === '') {
                 continue;
             }
 
-            $variableAnnotationType = $variableAnnotation->getType();
+            $variableAnnotationType = $variableAnnotation->getValue()->type;
 
             if ($variableAnnotationType instanceof UnionTypeNode || $variableAnnotationType instanceof IntersectionTypeNode) {
                 foreach ($variableAnnotationType->types as $typeNode) {
@@ -115,7 +115,7 @@ class ExplicitAssertionsSniff implements Sniff
                     continue;
                 }
 
-                if ($variableAnnotation->getVariableName() !== $tokens[$codePointer]['content']) {
+                if ($variableAnnotation->getValue()->variableName !== $tokens[$codePointer]['content']) {
                     continue;
                 }
 
@@ -125,7 +125,7 @@ class ExplicitAssertionsSniff implements Sniff
             } elseif ($tokens[$codePointer]['code'] === T_LIST) {
                 $listParenthesisOpener = TokenHelper::findNextEffective($phpcsFile, $codePointer + 1);
 
-                $variablePointerInList = TokenHelper::findNextContent($phpcsFile, T_VARIABLE, $variableAnnotation->getVariableName(), $listParenthesisOpener + 1, $tokens[$listParenthesisOpener]['parenthesis_closer']);
+                $variablePointerInList = TokenHelper::findNextContent($phpcsFile, T_VARIABLE, $variableAnnotation->getValue()->variableName, $listParenthesisOpener + 1, $tokens[$listParenthesisOpener]['parenthesis_closer']);
                 if ($variablePointerInList === null) {
                     continue;
                 }
@@ -139,7 +139,7 @@ class ExplicitAssertionsSniff implements Sniff
                     continue;
                 }
 
-                $variablePointerInList = TokenHelper::findNextContent($phpcsFile, T_VARIABLE, $variableAnnotation->getVariableName(), $codePointer + 1, $tokens[$codePointer]['bracket_closer']);
+                $variablePointerInList = TokenHelper::findNextContent($phpcsFile, T_VARIABLE, $variableAnnotation->getValue()->variableName, $codePointer + 1, $tokens[$codePointer]['bracket_closer']);
                 if ($variablePointerInList === null) {
                     continue;
                 }
@@ -149,7 +149,7 @@ class ExplicitAssertionsSniff implements Sniff
 
             } else {
                 if ($tokens[$codePointer]['code'] === T_WHILE) {
-                    $variablePointerInWhile = TokenHelper::findNextContent($phpcsFile, T_VARIABLE, $variableAnnotation->getVariableName(), $tokens[$codePointer]['parenthesis_opener'] + 1, $tokens[$codePointer]['parenthesis_closer']);
+                    $variablePointerInWhile = TokenHelper::findNextContent($phpcsFile, T_VARIABLE, $variableAnnotation->getValue()->variableName, $tokens[$codePointer]['parenthesis_opener'] + 1, $tokens[$codePointer]['parenthesis_closer']);
                     if ($variablePointerInWhile === null) {
                         continue;
                     }
@@ -160,7 +160,7 @@ class ExplicitAssertionsSniff implements Sniff
                     }
                 } else {
                     $asPointer = TokenHelper::findNext($phpcsFile, T_AS, $tokens[$codePointer]['parenthesis_opener'] + 1, $tokens[$codePointer]['parenthesis_closer']);
-                    $variablePointerInForeach = TokenHelper::findNextContent($phpcsFile, T_VARIABLE, $variableAnnotation->getVariableName(), $asPointer + 1, $tokens[$codePointer]['parenthesis_closer']);
+                    $variablePointerInForeach = TokenHelper::findNextContent($phpcsFile, T_VARIABLE, $variableAnnotation->getValue()->variableName, $asPointer + 1, $tokens[$codePointer]['parenthesis_closer']);
                     if ($variablePointerInForeach === null) {
                         continue;
                     }
@@ -205,7 +205,7 @@ class ExplicitAssertionsSniff implements Sniff
             /** @var IdentifierTypeNode|ThisTypeNode|UnionTypeNode $variableAnnotationType */
             $variableAnnotationType = $variableAnnotationType;
 
-            $assertion = $this->createAssert($variableAnnotation->getVariableName(), $variableAnnotationType);
+            $assertion = $this->createAssert($variableAnnotation->getValue()->variableName, $variableAnnotationType);
 
             if ($pointerToAddAssertion < $docCommentClosePointer && array_key_exists($pointerAfterDocComment + 1, $tokens)) {
                 $phpcsFile->fixer->addContentBefore(

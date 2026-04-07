@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace BestIt\Sniffs\Commenting;
 
 use BestIt\Sniffs\AbstractSniff;
+
 use const T_DOC_COMMENT_STAR;
 use const T_DOC_COMMENT_TAG;
 use const T_DOC_COMMENT_WHITESPACE;

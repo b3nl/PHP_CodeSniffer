@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace BestIt\Sniffs\Strings;
 
-use BestIt\Sniffs\DefaultSniffIntegrationTestTrait;
+use BestIt\Sniffs\SniffCorrectFilesTrait;
+use BestIt\Sniffs\SniffErrorFilesTrait;
 use BestIt\Sniffs\TestTokenRegistrationTrait;
 use BestIt\SniffTestCase;
 use BestIt\TestRequiredConstantsTrait;
+
 use const T_STRING_CONCAT;
 
 /**
@@ -18,7 +20,8 @@ use const T_STRING_CONCAT;
  */
 class ConcatCalculationSniffTest extends SniffTestCase
 {
-    use DefaultSniffIntegrationTestTrait;
+    use SniffCorrectFilesTrait;
+    use SniffErrorFilesTrait;
     use TestRequiredConstantsTrait;
     use TestTokenRegistrationTrait;
 
@@ -37,7 +40,7 @@ class ConcatCalculationSniffTest extends SniffTestCase
      *
      * @return iterable
      */
-    public function getRequiredConstantAsserts(): iterable
+    public static function getRequiredConstantAsserts(): iterable
     {
         return [
             'CODE_CALCULATION_WITHOUT_BRACKETS' => [

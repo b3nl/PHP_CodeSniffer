@@ -6,6 +6,7 @@ namespace BestIt\Sniffs\Strings;
 
 use BestIt\CodeSniffer\CodeError;
 use BestIt\Sniffs\AbstractSniff;
+
 use const T_CLOSE_CURLY_BRACKET;
 use const T_CLOSE_PARENTHESIS;
 use const T_CLOSE_SHORT_ARRAY;

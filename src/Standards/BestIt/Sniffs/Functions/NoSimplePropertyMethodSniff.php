@@ -9,12 +9,14 @@ use BestIt\Sniffs\SuppressingTrait;
 use SlevomatCodingStandard\Helpers\FunctionHelper;
 use SlevomatCodingStandard\Helpers\PropertyHelper;
 use SlevomatCodingStandard\Helpers\TokenHelper;
+
 use function current;
 use function is_int;
 use function preg_match;
 use function substr;
 use function trim;
 use function ucfirst;
+
 use const T_AS;
 use const T_CONST;
 use const T_FUNCTION;
@@ -252,7 +254,7 @@ class NoSimplePropertyMethodSniff extends AbstractSniff
      *
      * @return array|mixed[]
      */
-    public function register()
+    public function register(): array
     {
         return [
             T_VAR,

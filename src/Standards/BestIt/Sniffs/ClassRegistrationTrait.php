@@ -32,6 +32,6 @@ trait ClassRegistrationTrait
      */
     public function register(): array
     {
-        return Tokens::$ooScopeTokens;
+        return Tokens::OO_SCOPE_TOKENS;
     }
 }

@@ -16,19 +16,14 @@ use PHP_CodeSniffer\Sniffs\Sniff;
 class OpenTagSniff implements Sniff
 {
     /**
-     * Error message when open tag is not first statement.
+     * The next line after the open tag MUST be empty.
      */
-    public const ERROR_NOT_FIRST_STATEMENT = 'Open tag is not first statement';
+    public const CODE_LINE_NOT_EMPTY = 'LineNotEmpty';
 
     /**
      * After the open tag there MUST be an empty line.
      */
     public const CODE_NOT_FIRST_STATEMENT = 'OpenTagNotFirstStatement';
-
-    /**
-     * Error message when there is no space after open tag.
-     */
-    public const ERROR_NO_SPACE_AFTER_OPEN_TAG = 'No space after open tag';
 
     /**
      * There MUST be whitespace after the open tag.
@@ -41,78 +36,37 @@ class OpenTagSniff implements Sniff
     public const ERROR_LINE_NOT_EMPTY = 'Line after open tag is not empty.';
 
     /**
-     * The next line after the open tag MUST be empty.
+     * Error message when open tag is not first statement.
      */
-    public const CODE_LINE_NOT_EMPTY = 'LineNotEmpty';
+    public const ERROR_NOT_FIRST_STATEMENT = 'Open tag is not first statement';
 
     /**
-     * Registers the tokens that this sniff wants to listen for.
-     *
-     * @return int[] List of tokens to listen for
+     * Error message when there is no space after open tag.
      */
-    public function register(): array
-    {
-        return [
-            T_OPEN_TAG,
-        ];
-    }
+    public const ERROR_NO_SPACE_AFTER_OPEN_TAG = 'No space after open tag';
 
     /**
-     * Called when one of the token types that this sniff is listening for is found.
-     *
-     * @phpcsSuppress SlevomatCodingStandard.TypeHints.TypeHintDeclaration.MissingParameterTypeHint
-     *
-     * @param File $phpcsFile The PHP_CodeSniffer file where the token was found.
-     * @param int $stackPtr The position in the PHP_CodeSniffer file's token stack where the token was found.
-     *
-     * @return void Optionally returns a stack pointer.
-     */
-    public function process(File $phpcsFile, $stackPtr): void
-    {
-        $tokens = $phpcsFile->getTokens();
-
-        //Open tag is not first token in token stack
-        if ($stackPtr !== 0) {
-            $this->handleOpenTagNotFirstStatement($phpcsFile, $stackPtr);
-        }
-
-        $whitespacePtr = $stackPtr + 1;
-        $whitespaceToken = $tokens[$whitespacePtr];
-
-        //Following token not whitespace token
-        if ($whitespaceToken['code'] !== T_WHITESPACE) {
-            $this->handleNoSpaceAfterOpenTag($phpcsFile, $stackPtr, $whitespacePtr);
-
-            return;
-        }
-
-        //Whitespace token not empty
-        if ($whitespaceToken['length'] !== 0) {
-            $this->handleLineNotEmpty($phpcsFile, $whitespacePtr);
-        }
-    }
-
-    /**
-     * Handles open tag not first statement error.
+     * Handles line after open tag not empty.
      *
      * @param File $phpcsFile The php cs file
-     * @param int $stackPtr Pointer to the open tag token
+     * @param int $whitespacePtr Pointer to the line after the open tag
      *
      * @return void
      */
-    private function handleOpenTagNotFirstStatement(File $phpcsFile, int $stackPtr): void
+    private function handleLineNotEmpty(File $phpcsFile, int $whitespacePtr): void
     {
-        $fixNotFirstStatement = $phpcsFile->addFixableError(
-            self::ERROR_NOT_FIRST_STATEMENT,
-            $stackPtr,
-            static::CODE_NOT_FIRST_STATEMENT,
+        $fixSpaceNotScndLine = $phpcsFile->addFixableError(
+            self::ERROR_LINE_NOT_EMPTY,
+            $whitespacePtr,
+            static::CODE_LINE_NOT_EMPTY,
         );
 
-        if ($fixNotFirstStatement) {
+        if ($fixSpaceNotScndLine) {
             $phpcsFile->fixer->beginChangeset();
-            for ($i = 0; $i < $stackPtr; $i++) {
-                $phpcsFile->fixer->replaceToken($i, '');
-            }
+            $phpcsFile->fixer->replaceToken(
+                $whitespacePtr,
+                '',
+            );
             $phpcsFile->fixer->endChangeset();
         }
     }
@@ -142,28 +96,82 @@ class OpenTagSniff implements Sniff
     }
 
     /**
-     * Handles line after open tag not empty.
+     * Handles open tag not first statement error.
      *
      * @param File $phpcsFile The php cs file
-     * @param int $whitespacePtr Pointer to the line after the open tag
+     * @param int $stackPtr Pointer to the open tag token
      *
      * @return void
      */
-    private function handleLineNotEmpty(File $phpcsFile, int $whitespacePtr): void
+    private function handleOpenTagNotFirstStatement(File $phpcsFile, int $stackPtr): void
     {
-        $fixSpaceNotScndLine = $phpcsFile->addFixableError(
-            self::ERROR_LINE_NOT_EMPTY,
-            $whitespacePtr,
-            static::CODE_LINE_NOT_EMPTY,
+        $fixNotFirstStatement = $phpcsFile->addFixableError(
+            self::ERROR_NOT_FIRST_STATEMENT,
+            $stackPtr,
+            static::CODE_NOT_FIRST_STATEMENT,
         );
 
-        if ($fixSpaceNotScndLine) {
+        if ($fixNotFirstStatement) {
             $phpcsFile->fixer->beginChangeset();
-            $phpcsFile->fixer->replaceToken(
-                $whitespacePtr,
-                '',
-            );
+            for ($i = 0; $i < $stackPtr; $i++) {
+                $phpcsFile->fixer->replaceToken($i, '');
+            }
             $phpcsFile->fixer->endChangeset();
         }
+    }
+
+    /**
+     * Called when one of the token types that this sniff is listening for is found.
+     *
+     * @phpcsSuppress SlevomatCodingStandard.TypeHints.TypeHintDeclaration.MissingParameterTypeHint
+     *
+     * @param File $phpcsFile The PHP_CodeSniffer file where the token was found.
+     * @param int $stackPtr The position in the PHP_CodeSniffer file's token stack where the token was found.
+     *
+     * @return void Optionally returns a stack pointer.
+     */
+    public function process(File $phpcsFile, $stackPtr): void
+    {
+        $tokens = $phpcsFile->getTokens();
+
+        //Open tag is not first token in token stack
+        if ($stackPtr !== 0) {
+            $this->handleOpenTagNotFirstStatement($phpcsFile, $stackPtr);
+        }
+
+        $whitespacePtr = $stackPtr + 1;
+        $whitespaceToken = $tokens[$whitespacePtr];
+
+        // In phpcs 4, T_OPEN_TAG no longer includes the trailing newline.
+        // The token immediately after T_OPEN_TAG is a zero-length T_WHITESPACE "\n".
+        // Skip it to reach the actual line-2 content.
+        if ($whitespaceToken['code'] === T_WHITESPACE && $whitespaceToken['length'] === 0) {
+            $whitespacePtr++;
+            $whitespaceToken = $tokens[$whitespacePtr];
+        }
+
+        //Following token not whitespace token
+        if ($whitespaceToken['code'] !== T_WHITESPACE) {
+            $this->handleNoSpaceAfterOpenTag($phpcsFile, $stackPtr, $whitespacePtr);
+
+            return;
+        }
+
+        //Whitespace token not empty
+        if ($whitespaceToken['length'] !== 0) {
+            $this->handleLineNotEmpty($phpcsFile, $whitespacePtr);
+        }
+    }
+
+    /**
+     * Registers the tokens that this sniff wants to listen for.
+     *
+     * @return int[] List of tokens to listen for
+     */
+    public function register(): array
+    {
+        return [
+            T_OPEN_TAG,
+        ];
     }
 }

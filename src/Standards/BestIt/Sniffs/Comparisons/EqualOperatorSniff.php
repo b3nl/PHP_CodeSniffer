@@ -6,6 +6,7 @@ namespace BestIt\Sniffs\Comparisons;
 
 use BestIt\Sniffs\AbstractSniff;
 use BestIt\Sniffs\SuppressingTrait;
+
 use const T_IS_EQUAL;
 use const T_IS_NOT_EQUAL;
 

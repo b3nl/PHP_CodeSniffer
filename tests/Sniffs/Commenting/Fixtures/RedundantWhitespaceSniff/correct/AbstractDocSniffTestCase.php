@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace BestIt\Sniffs\Commenting;
 
-use BestIt\Sniffs\DefaultSniffIntegrationTestTrait;
-use BestIt\Sniffs\TestTokenRegistrationTrait;
 use BestIt\SniffTestCase;
+use BestIt\Sniffs\SniffCorrectFilesTrait;
+use BestIt\Sniffs\TestTokenRegistrationTrait;
 use PHP_CodeSniffer\Sniffs\Sniff;
 use function defined;
 
@@ -16,14 +16,17 @@ use function defined;
  * @author blange <bjoern.lange@bestit-online.de>
  * @package BestIt\Sniffs\Commenting
  */
-abstract class AbstractDocSniffTest extends SniffTestCase
+abstract class AbstractDocSniffsTestCase extends SniffTestCase
 {
+    use SniffCorrectFilesTrait;
     use TestTokenRegistrationTrait;
 
     /**
      * The tested class.
      *
      * We use this var to reduce the hard dependencies on internals from a specific slevomat version.
+     * - String 1
+     * - String 2
      *
      * @var Sniff|null
      */
@@ -55,8 +58,9 @@ abstract class AbstractDocSniffTest extends SniffTestCase
     public function testRequiredConstants(string $constant): void
     {
         static::assertTrue(
+
             defined(get_class($this->testedObject) . '::' . $constant),
-            'Constant ' . $constant . ' is missing.',
+            'Constant ' . $constant . ' is missing.'
         );
     }
 }

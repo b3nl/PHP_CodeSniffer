@@ -1,0 +1,19 @@
+{
+    "source": {
+        "directories": [
+            "src"
+        ]
+    },
+    "mutators": {
+        "@default": true,
+        "global-ignore": [
+            "BestIt\\Sniffs\\AbstractSniff::areRequirementsMet",
+            "BestIt\\Sniffs\\AbstractSniff::fixDefaultProblem",
+            "BestIt\\Sniffs\\AbstractSniff::setUp",
+            "BestIt\\Sniffs\\AbstractSniff::tearDown"
+        ],
+        "global-ignoreSourceCodeByRegex": [
+            ".*->recordMetric.*"
+        ]
+    }
+}

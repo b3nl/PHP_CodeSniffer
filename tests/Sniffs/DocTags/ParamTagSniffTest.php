@@ -4,12 +4,15 @@ declare(strict_types=1);
 
 namespace BestIt\Sniffs\DocTags;
 
-use BestIt\Sniffs\DefaultSniffIntegrationTestTrait;
+use BestIt\Sniffs\SniffCorrectFilesTrait;
+use BestIt\Sniffs\SniffErrorFilesTrait;
+use BestIt\Sniffs\SniffWarningFilesTrait;
 use BestIt\Sniffs\TestTokenRegistrationTrait;
 use BestIt\SniffTestCase;
 use BestIt\TestRequiredConstantsTrait;
+
 use function array_merge;
-use function sprintf;
+
 use const T_DOC_COMMENT_TAG;
 
 /**
@@ -20,7 +23,9 @@ use const T_DOC_COMMENT_TAG;
  */
 class ParamTagSniffTest extends SniffTestCase
 {
-    use DefaultSniffIntegrationTestTrait;
+    use SniffCorrectFilesTrait;
+    use SniffErrorFilesTrait;
+    use SniffWarningFilesTrait;
     use TestRequiredConstantsTrait;
     use TestTokenRegistrationTrait;
 
@@ -39,7 +44,7 @@ class ParamTagSniffTest extends SniffTestCase
      *
      * @return array The required constants of a class. The second value is a possible value which should be checked.
      */
-    public function getRequiredConstantAsserts(): array
+    public static function getRequiredConstantAsserts(): array
     {
         return [
             'CODE_TAG_MISSING_DESC' => ['CODE_TAG_MISSING_DESC', 'MissingDesc'],
@@ -67,24 +72,28 @@ class ParamTagSniffTest extends SniffTestCase
     /**
      * Tests description warnings after config.
      *
-     * @dataProvider getCorrectFileListAsDataProvider
-     *
-     * @param string $file Fixture file
-     *
      * @return void
      */
-    public function testDescriptionWarningsWithConfig(string $file): void
+    public function testDescriptionWarningsWithConfig(): void
     {
-        $unusedData = [];
-        $fileMetadata = $this->getMetadataFromFilenameAsAssertArray($file, $unusedData);
+        $files = $this->getCorrectFileListAsDataProvider();
 
-        if (!$fileMetadata) {
-            static::markTestSkipped(sprintf('The file %s does not contain any metadata.', basename($file)));
+        if (!$files) {
+            static::markTestSkipped('No correct fixtures found.');
         }
 
-        $callData = array_merge($fileMetadata, [['descAsWarning' => true]]);
+        foreach ($files as [$file]) {
+            $unusedData = [];
+            $fileMetadata = $this->getMetadataFromFilenameAsAssertArray($file, $unusedData);
 
-        $this->assertWarningsInFile(...$callData);
+            if (!$fileMetadata) {
+                continue;
+            }
+
+            $callData = array_merge($fileMetadata, [['descAsWarning' => true]]);
+
+            $this->assertWarningsInFile(...$callData);
+        }
     }
 
     /**

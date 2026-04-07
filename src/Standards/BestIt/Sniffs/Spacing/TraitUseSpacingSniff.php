@@ -8,8 +8,10 @@ use BestIt\CodeSniffer\Helper\ClassHelper;
 use BestIt\CodeSniffer\Helper\TokenHelper;
 use BestIt\Sniffs\AbstractSniff;
 use BestIt\Sniffs\ClassRegistrationTrait;
+
 use function count;
 use function substr_count;
+
 use const T_CLOSE_CURLY_BRACKET;
 use const T_OPEN_CURLY_BRACKET;
 use const T_SEMICOLON;
@@ -63,16 +65,16 @@ class TraitUseSpacingSniff extends AbstractSniff
     private const LINES_BETWEEN_USES = 0;
 
     /**
-     * The message to the user for the error before usages.
-     */
-    private const MESSAGE_INCORRECT_LINES_COUNT_BEFORE_FIRST_USE =
-        'Expected %d lines before first use statement, found %d.';
-
-    /**
      * The message to the user for the error after the last usage.
      */
     private const MESSAGE_INCORRECT_LINES_COUNT_AFTER_LAST_USE =
         'Expected %d lines after last use statement, found %d.';
+
+    /**
+     * The message to the user for the error before usages.
+     */
+    private const MESSAGE_INCORRECT_LINES_COUNT_BEFORE_FIRST_USE =
+        'Expected %d lines before first use statement, found %d.';
 
     /**
      * The message to the user for the error between uses.

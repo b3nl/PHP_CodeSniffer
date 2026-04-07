@@ -20,6 +20,5 @@ class ConstantSpacingSniff extends BaseSniff
      *
      * @var int
      */
-    // phpcs:ignore BestIt.TypeHints.PropertyTypeHint.MissingNativeTypeHint
-    public $minLinesCountBeforeWithoutComment = 1;
+    public int $minLinesCountBeforeWithoutComment = 1;
 }

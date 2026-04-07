@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace BestIt\Sniffs\Formatting;
 
-use BestIt\Sniffs\DefaultSniffIntegrationTestTrait;
+use BestIt\Sniffs\SniffCorrectFilesTrait;
+use BestIt\Sniffs\SniffErrorFilesTrait;
 use BestIt\Sniffs\TestTokenRegistrationTrait;
 use BestIt\SniffTestCase;
 use BestIt\TestRequiredConstantsTrait;
+
 use const T_ANON_CLASS;
 use const T_CLASS;
 use const T_ENUM;
@@ -16,7 +18,8 @@ use const T_TRAIT;
 
 class TraitUseDeclarationSniffTest extends SniffTestCase
 {
-    use DefaultSniffIntegrationTestTrait;
+    use SniffCorrectFilesTrait;
+    use SniffErrorFilesTrait;
     use TestRequiredConstantsTrait;
     use TestTokenRegistrationTrait;
 
@@ -31,7 +34,7 @@ class TraitUseDeclarationSniffTest extends SniffTestCase
         ];
     }
 
-    public function getRequiredConstantAsserts(): array
+    public static function getRequiredConstantAsserts(): array
     {
         return [
             'CODE_MULTIPLE_TRAITS_PER_DECLARATION' =>

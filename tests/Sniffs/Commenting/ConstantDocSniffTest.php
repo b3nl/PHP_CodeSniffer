@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace BestIt\Sniffs\Commenting;
 
+use BestIt\Sniffs\SniffErrorFilesTrait;
+use BestIt\Sniffs\SniffWarningFilesTrait;
+
 use const T_CONST;
 
 /**
@@ -13,8 +16,11 @@ use const T_CONST;
  * @package BestIt\Sniffs\Commenting
  * @see ConstantDocSniff
  */
-class ConstantDocSniffTest extends AbstractDocSniffTest
+class ConstantDocSniffTest extends AbstractDocSniffTestCase
 {
+    use SniffErrorFilesTrait;
+    use SniffWarningFilesTrait;
+
     /**
      * Returns the tokens which should be checked.
      *

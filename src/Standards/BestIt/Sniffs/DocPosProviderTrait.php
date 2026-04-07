@@ -34,7 +34,7 @@ trait DocPosProviderTrait
      *
      * @return int|bool
      */
-    protected function getDocCommentPos()
+    protected function getDocCommentPos(): int|false|null
     {
         if ($this->docCommentPos === false) {
             $this->docCommentPos = $this->loadDocCommentPos();

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace BestIt\Sniffs\Formatting;
 
+use BestIt\CodeSniffer\Helper\TokenHelper;
 use SlevomatCodingStandard\Sniffs\Arrays\TrailingArrayCommaSniff as BaseSniff;
 
 /**
@@ -14,4 +15,8 @@ use SlevomatCodingStandard\Sniffs\Arrays\TrailingArrayCommaSniff as BaseSniff;
  */
 class TrailingArrayCommaSniff extends BaseSniff
 {
+    public function register(): array
+    {
+        return TokenHelper::ARRAY_TOKEN_CODES;
+    }
 }

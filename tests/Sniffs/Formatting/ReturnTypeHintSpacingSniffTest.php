@@ -4,7 +4,8 @@ declare(strict_types=1);
 
 namespace BestIt\Sniffs\Formatting;
 
-use BestIt\Sniffs\DefaultSniffIntegrationTestTrait;
+use BestIt\Sniffs\SniffCorrectFilesTrait;
+use BestIt\Sniffs\SniffErrorFilesTrait;
 use BestIt\SniffTestCase;
 use SlevomatCodingStandard\Sniffs\TypeHints\ReturnTypeHintSpacingSniff as BaseReturnTypeHintSpacingSniff;
 
@@ -16,7 +17,8 @@ use SlevomatCodingStandard\Sniffs\TypeHints\ReturnTypeHintSpacingSniff as BaseRe
  */
 class ReturnTypeHintSpacingSniffTest extends SniffTestCase
 {
-    use DefaultSniffIntegrationTestTrait;
+    use SniffCorrectFilesTrait;
+    use SniffErrorFilesTrait;
 
     /**
      * The tested class.

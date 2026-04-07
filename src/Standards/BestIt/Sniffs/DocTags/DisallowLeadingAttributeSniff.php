@@ -8,10 +8,12 @@ use BestIt\CodeSniffer\CodeError;
 use BestIt\CodeSniffer\CodeWarning;
 use BestIt\CodeSniffer\Helper\TokenHelper;
 use BestIt\Sniffs\AbstractSniff;
+
 use function compact;
 use function in_array;
 use function sprintf;
 use function str_repeat;
+
 use const T_ATTRIBUTE;
 use const T_ATTRIBUTE_END;
 use const T_CLOSE_SQUARE_BRACKET;

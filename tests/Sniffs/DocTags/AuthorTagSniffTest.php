@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace BestIt\Sniffs\DocTags;
 
-use BestIt\Sniffs\DefaultSniffIntegrationTestTrait;
+use BestIt\Sniffs\SniffCorrectFilesTrait;
+use BestIt\Sniffs\SniffErrorFilesTrait;
 use BestIt\Sniffs\TestTokenRegistrationTrait;
 use BestIt\SniffTestCase;
 use BestIt\TestRequiredConstantsTrait;
+
 use const T_DOC_COMMENT_TAG;
 
 /**
@@ -18,7 +20,8 @@ use const T_DOC_COMMENT_TAG;
  */
 class AuthorTagSniffTest extends SniffTestCase
 {
-    use DefaultSniffIntegrationTestTrait;
+    use SniffCorrectFilesTrait;
+    use SniffErrorFilesTrait;
     use TestRequiredConstantsTrait;
     use TestTokenRegistrationTrait;
 
@@ -37,7 +40,7 @@ class AuthorTagSniffTest extends SniffTestCase
      *
      * @return array The required constants of a class. The second value is a possible value which should be checked.
      */
-    public function getRequiredConstantAsserts(): array
+    public static function getRequiredConstantAsserts(): array
     {
         return [
             'CODE_TAG_CONTENT_FORMAT_INVALID' => ['CODE_TAG_CONTENT_FORMAT_INVALID', 'TagContentFormatInvalid'],

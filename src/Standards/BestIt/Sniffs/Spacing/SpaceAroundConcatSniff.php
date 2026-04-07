@@ -7,6 +7,7 @@ namespace BestIt\Sniffs\Spacing;
 use BestIt\CodeSniffer\CodeError;
 use BestIt\CodeSniffer\CodeWarning;
 use BestIt\Sniffs\AbstractSniff;
+
 use const T_STRING_CONCAT;
 use const T_WHITESPACE;
 

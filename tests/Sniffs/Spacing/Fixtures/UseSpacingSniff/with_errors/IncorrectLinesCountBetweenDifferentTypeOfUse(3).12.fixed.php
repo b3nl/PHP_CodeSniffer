@@ -6,6 +6,7 @@ namespace BestIt\Sniffs\Formatting\Fixtures\UseSpacingSniff\with_errors;
 
 use SplObjectStorage;
 use stdClass;
+
 use function uniqid;
 use function var_dump;
 

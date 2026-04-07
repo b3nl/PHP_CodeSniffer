@@ -4,7 +4,8 @@ declare(strict_types=1);
 
 namespace BestIt\Sniffs\DocTags;
 
-use BestIt\Sniffs\DefaultSniffIntegrationTestTrait;
+use BestIt\Sniffs\SniffCorrectFilesTrait;
+use BestIt\Sniffs\SniffErrorFilesTrait;
 use BestIt\Sniffs\TestTokenRegistrationTrait;
 use BestIt\SniffTestCase;
 use BestIt\TestRequiredConstantsTrait;
@@ -18,21 +19,10 @@ use PHP_CodeSniffer\Util\Tokens;
  */
 class DisallowedClassTagsSniffTest extends SniffTestCase
 {
-    use DefaultSniffIntegrationTestTrait;
+    use SniffCorrectFilesTrait;
+    use SniffErrorFilesTrait;
     use TestRequiredConstantsTrait;
     use TestTokenRegistrationTrait;
-
-    /**
-     * Returns the names of the required constants.
-     *
-     * @return array The required constants of a class. The second value is a possible value which should be checked.
-     */
-    public function getRequiredConstantAsserts(): array
-    {
-        return [
-            'CODE_TAG_NOT_ALLOWED' => ['CODE_TAG_NOT_ALLOWED', 'TagNotAllowed'],
-        ];
-    }
 
     /**
      * Returns the tokens which should be checked.
@@ -42,6 +32,18 @@ class DisallowedClassTagsSniffTest extends SniffTestCase
     protected function getExpectedTokens(): array
     {
         return Tokens::$ooScopeTokens;
+    }
+
+    /**
+     * Returns the names of the required constants.
+     *
+     * @return array The required constants of a class. The second value is a possible value which should be checked.
+     */
+    public static function getRequiredConstantAsserts(): array
+    {
+        return [
+            'CODE_TAG_NOT_ALLOWED' => ['CODE_TAG_NOT_ALLOWED', 'TagNotAllowed'],
+        ];
     }
 
     /**

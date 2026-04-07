@@ -53,7 +53,7 @@ class LineHelper
      *
      * @return void
      */
-    public function removeLine(int $line): void
+    private function removeLine(int $line): void
     {
         foreach ($this->file->getTokens() as $tagPtr => $tagToken) {
             if ($tagToken['line'] !== $line) {

@@ -4,15 +4,18 @@ declare(strict_types=1);
 
 namespace BestIt\Sniffs\Formatting;
 
-use BestIt\Sniffs\DefaultSniffIntegrationTestTrait;
+use BestIt\Sniffs\SniffCorrectFilesTrait;
+use BestIt\Sniffs\SniffErrorFilesTrait;
 use BestIt\Sniffs\TestTokenRegistrationTrait;
 use BestIt\SniffTestCase;
 use BestIt\TestRequiredConstantsTrait;
+
 use const T_ENUM;
 
 class NoWhitespaceAfterClassOpeningSniffTest extends SniffTestCase
 {
-    use DefaultSniffIntegrationTestTrait;
+    use SniffCorrectFilesTrait;
+    use SniffErrorFilesTrait;
     use TestTokenRegistrationTrait;
     use TestRequiredConstantsTrait;
 
@@ -27,7 +30,7 @@ class NoWhitespaceAfterClassOpeningSniffTest extends SniffTestCase
         ];
     }
 
-    public function getRequiredConstantAsserts(): iterable
+    public static function getRequiredConstantAsserts(): iterable
     {
         return [
             'CODE_INCORRECT_EMPTY_LINES_AFTER_OPENING_BRACE' =>

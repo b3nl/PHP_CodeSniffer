@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace BestIt;
 
 use PHP_CodeSniffer\Sniffs\Sniff;
+use PHPUnit\Framework\Attributes\DataProvider;
+
 use function constant;
 
 /**
@@ -45,18 +47,17 @@ trait TestRequiredConstantsTrait
      *
      * @return iterable The required constants of a class. The second value is a possible value which should be checked.
      */
-    abstract public function getRequiredConstantAsserts(): iterable;
+    abstract public static function getRequiredConstantAsserts(): iterable;
 
     /**
      * Checks if the api is extended.
-     *
-     * @dataProvider getRequiredConstantAsserts
      *
      * @param string $constant The name of the constant.
      * @param string $constantValue We check the value as well, because some constants are fixed in ruleset.xmls.
      *
      * @return void
      */
+    #[DataProvider('getRequiredConstantAsserts')]
     public function testRequiredConstants(string $constant, ?string $constantValue = null): void
     {
         $fullConstantName = get_class($this->testedObject) . '::' . $constant;

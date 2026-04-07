@@ -17,24 +17,21 @@ class PropertyTypeHintSniff extends SlevomatPropertyTypeHintSniff
     /**
      * Enforces to transform @var int into native int typehint.
      *
-     * @phpcsSuppress SlevomatCodingStandard.TypeHints.PropertyTypeHint.MissingNativeTypeHint
-     * @var bool bool/null
+     * @var bool|null
      */
-    public $enableNativeTypeHint = true;
+    public ?bool $enableNativeTypeHint = true;
 
     /**
      * Enforces to transform @var mixed into native mixed typehint.
      *
-     * @phpcsSuppress SlevomatCodingStandard.TypeHints.PropertyTypeHint.MissingNativeTypeHint
      * @var bool|null
      */
-    public $enableMixedTypeHint = true;
+    public ?bool $enableMixedTypeHint = true;
 
     /**
      * Enforces to transform @var string|int into native string|int typehint.
      *
-     * @phpcsSuppress SlevomatCodingStandard.TypeHints.PropertyTypeHint.MissingNativeTypeHint
-     * @var bool bool|null
+     * @var bool|null
      */
-    public $enableUnionTypeHint = true;
+    public ?bool $enableUnionTypeHint = true;
 }

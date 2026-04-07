@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace BestIt\Sniffs\TypeHints;
 
-use BestIt\Sniffs\DefaultSniffIntegrationTestTrait;
+use BestIt\Sniffs\SniffCorrectFilesTrait;
+use BestIt\Sniffs\SniffErrorFilesTrait;
 use BestIt\Sniffs\TestTokenRegistrationTrait;
 use BestIt\SniffTestCase;
 use BestIt\TestRequiredConstantsTrait;
+
 use const T_FUNCTION;
 
 /**
@@ -18,7 +20,7 @@ use const T_FUNCTION;
  */
 class ReturnTypeDeclarationSniffTest extends SniffTestCase
 {
-    use DefaultSniffIntegrationTestTrait;
+    use SniffErrorFilesTrait;
     use TestRequiredConstantsTrait;
     use TestTokenRegistrationTrait;
 
@@ -41,7 +43,7 @@ class ReturnTypeDeclarationSniffTest extends SniffTestCase
      *
      * @return array The required constants of a class. The second value is a possible value which should be checked.
      */
-    public function getRequiredConstantAsserts(): array
+    public static function getRequiredConstantAsserts(): array
     {
         return [
             'CODE_MISSING_RETURN_TYPE' => ['CODE_MISSING_RETURN_TYPE', 'MissingReturnTypeHint'],

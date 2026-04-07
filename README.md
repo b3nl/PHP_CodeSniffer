@@ -277,12 +277,37 @@ enforce that the constant values stay api-stable!
 
 #### Default Integration Tests
 
-The trait _BestIt\Sniffs\DefaultSniffIntegrationTestTrait_ provides you with three tests to test the usually use cases of
-a sniff based on sniff-individual test files:
+Three focused traits provide the standard fixture-based sniff test scenarios. Use only the traits your sniff's fixture
+directory actually needs:
 
-1. testCorrect
-2. testErrors
-3. testWarnings
+- **`BestIt\Sniffs\SniffCorrectFilesTrait`** — provides `testCorrect()`. Use whenever you have a `correct/` fixture folder. Always required.
+- **`BestIt\Sniffs\SniffErrorFilesTrait`** — provides `testErrors()`. Use when you have a `with_errors/` fixture folder.
+- **`BestIt\Sniffs\SniffWarningFilesTrait`** — provides `testWarnings()`. Use when you have a `with_warnings/` fixture folder.
+
+Example for a sniff that has both errors and warnings:
+
+```php
+class MySniffTest extends SniffTestCase
+{
+    use SniffCorrectFilesTrait;
+    use SniffErrorFilesTrait;
+    use SniffWarningFilesTrait;
+    // ...
+}
+```
+
+Example for a sniff that only has errors:
+
+```php
+class MySniffTest extends SniffTestCase
+{
+    use SniffCorrectFilesTrait;
+    use SniffErrorFilesTrait;
+    // ...
+}
+```
+
+The tests `testCorrect`, `testErrors`, and `testWarnings` are provided respectively by the above traits.
 
 ##### Requirements
 

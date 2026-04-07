@@ -19,14 +19,12 @@ class NoWhitespaceAfterClassOpeningSniff extends EmptyLinesAroundClassBracesSnif
      *
      * @var int
      */
-    // phpcs:ignore BestIt.TypeHints.PropertyTypeHint.MissingNativeTypeHint
-    public $linesCountAfterOpeningBrace = 0;
+    public int $linesCountAfterOpeningBrace = 0;
 
     /**
      * There MUST be no lines before the closing brace.
      *
      * @var int
      */
-    // phpcs:ignore BestIt.TypeHints.PropertyTypeHint.MissingNativeTypeHint
-    public $linesCountBeforeClosingBrace = 0;
+    public int $linesCountBeforeClosingBrace = 0;
 }

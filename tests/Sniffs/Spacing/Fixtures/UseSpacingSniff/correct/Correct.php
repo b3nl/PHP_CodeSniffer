@@ -2,7 +2,10 @@
 
 declare(strict_types=1);
 
-namespace BestIt\Sniffs\Formatting\Fixtures\UseSpacingSniff\correct;
+namespace BestIt\Sniffs\Formatting\Fixtures\UseSpacingSniff\with_errors;
+
+use SplObjectStorage;
+use stdClass;
 
 use function uniqid;
 use function var_dump;
@@ -11,6 +14,9 @@ class Correct
 {
     public function __construct()
     {
-        var_dump(uniqid());
+        $storage = new SplObjectStorage();
+        $storage->attach(new stdClass(), uniqid());
+
+        var_dump($storage);
     }
 }

@@ -8,6 +8,7 @@ use BestIt\CodeSniffer\Helper\ClassHelper;
 use BestIt\CodeSniffer\Helper\TokenHelper;
 use BestIt\Sniffs\AbstractSniff;
 use BestIt\Sniffs\ClassRegistrationTrait;
+
 use const T_COMMA;
 use const T_OPEN_CURLY_BRACKET;
 use const T_SEMICOLON;

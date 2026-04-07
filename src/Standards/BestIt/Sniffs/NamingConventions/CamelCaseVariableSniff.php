@@ -9,8 +9,10 @@ use BestIt\Sniffs\AbstractSniff;
 use BestIt\Sniffs\VariableRegistrationTrait;
 use PHP_CodeSniffer\Util\Common;
 use SlevomatCodingStandard\Helpers\PropertyHelper;
+
 use function array_key_exists;
 use function substr;
+
 use const T_EQUAL;
 use const T_SEMICOLON;
 

@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace BestIt\Sniffs\Commenting;
 
+use BestIt\Sniffs\SniffErrorFilesTrait;
+use BestIt\Sniffs\SniffWarningFilesTrait;
 use PHP_CodeSniffer\Util\Tokens;
 
 /**
@@ -13,8 +15,11 @@ use PHP_CodeSniffer\Util\Tokens;
  * @package BestIt\Sniffs\Commenting
  * @see ClassDocSniff
  */
-class ClassDocSniffTest extends AbstractDocSniffTest
+class ClassDocSniffTest extends AbstractDocSniffTestCase
 {
+    use SniffErrorFilesTrait;
+    use SniffWarningFilesTrait;
+
     /**
      * Returns the tokens which should be checked.
      *

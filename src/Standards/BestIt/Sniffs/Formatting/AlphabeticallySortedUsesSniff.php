@@ -11,10 +11,12 @@ use BestIt\CodeSniffer\Helper\UseStatementHelper;
 use BestIt\Sniffs\AbstractSniff;
 use SlevomatCodingStandard\Helpers\NamespaceHelper;
 use SlevomatCodingStandard\Helpers\UseStatement;
+
 use function end;
 use function reset;
 use function strcasecmp;
 use function uasort;
+
 use const T_OPEN_TAG;
 use const T_SEMICOLON;
 

@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace BestIt\Sniffs\Functions;
 
-use BestIt\Sniffs\DefaultSniffIntegrationTestTrait;
+use BestIt\Sniffs\SniffCorrectFilesTrait;
+use BestIt\Sniffs\SniffWarningFilesTrait;
 use BestIt\Sniffs\TestTokenRegistrationTrait;
 use BestIt\SniffTestCase;
 use BestIt\TestRequiredConstantsTrait;
+
 use const T_FUNCTION;
 
 /**
@@ -18,7 +20,8 @@ use const T_FUNCTION;
  */
 class MultipleReturnSniffTest extends SniffTestCase
 {
-    use DefaultSniffIntegrationTestTrait;
+    use SniffCorrectFilesTrait;
+    use SniffWarningFilesTrait;
     use TestRequiredConstantsTrait;
     use TestTokenRegistrationTrait;
 
@@ -37,7 +40,7 @@ class MultipleReturnSniffTest extends SniffTestCase
      *
      * @return array
      */
-    public function getRequiredConstantAsserts(): array
+    public static function getRequiredConstantAsserts(): array
     {
         return [
             'CODE_MULTIPLE_RETURNS_FOUND' => ['CODE_MULTIPLE_RETURNS_FOUND', 'MultipleReturnsFound'],

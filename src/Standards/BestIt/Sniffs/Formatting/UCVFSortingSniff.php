@@ -9,12 +9,14 @@ use BestIt\CodeSniffer\Helper\TokenHelper;
 use BestIt\CodeSniffer\Helper\UseStatementHelper;
 use BestIt\Sniffs\AbstractSniff;
 use BestIt\Sniffs\ClassRegistrationTrait;
+
 use function array_combine;
 use function array_filter;
 use function array_keys;
 use function array_map;
 use function array_search;
 use function uasort;
+
 use const ARRAY_FILTER_USE_BOTH;
 use const T_CONST;
 use const T_FUNCTION;

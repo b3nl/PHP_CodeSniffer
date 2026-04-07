@@ -8,6 +8,7 @@ use BestIt\CodeSniffer\CodeWarning;
 use BestIt\CodeSniffer\Helper\DocTagHelper;
 use BestIt\CodeSniffer\Helper\LineHelper;
 use BestIt\Sniffs\AbstractSniff;
+
 use function array_filter;
 use function array_key_exists;
 use function array_shift;
@@ -17,6 +18,7 @@ use function str_repeat;
 use function strcasecmp;
 use function strlen;
 use function uasort;
+
 use const T_DOC_COMMENT_OPEN_TAG;
 
 /**

@@ -8,15 +8,15 @@
             "phpcbf"
         ],
         "low-level-checks": [
-            "license-check",
+            "phpcpd --fuzzy --verbose src tests",
+            "phpcs -p src --standard=PHPCompatibility --runtime-set testVersion 8.2",
             "phpmd build,src,tests text phpmd.xml.dist",
-            "phpcpd src tests",
             "phpcs --ignore=\"**.js\" --runtime-set ignore_warnings_on_exit 1",
             "phpunit --coverage-xml=build/coverage/coverage-xml --log-junit=build/coverage/junit.xml"
         ],
         "high-level-checks": [
             "@low-level-checks",
-            "infection --only-covered -s --no-progress --no-ansi --no-interaction --min-msi=75 --min-covered-msi=75 --skip-initial-tests --coverage=build/coverage --threads=4"
+            "infection -s --no-progress --no-ansi --no-interaction --min-msi=77 --min-covered-msi=77 --skip-initial-tests --coverage=build/coverage --threads=4"
         ]
     },
     "type": "library",
@@ -45,23 +45,21 @@
     },
     "prefer-stable": true,
     "require": {
-        "php": ">=8.0",
-        "slevomat/coding-standard": "^8.0"
+        "php": ">=8.2",
+        "slevomat/coding-standard": "^8.0",
+        "squizlabs/php_codesniffer": "^4.0"
     },
     "require-dev": {
-        "phpmd/phpmd": "^2.6",
-        "sebastian/phpcpd": "^6.0.3",
-        "phploc/phploc": "^7.0.2",
-        "phpunit/phpunit": "^9.3",
-        "phpcompatibility/php-compatibility": "^9.3",
+        "phpmd/phpmd": "^2.15",
+        "phpunit/phpunit": "^12.0",
         "captainhook/plugin-composer": "^5.3",
-        "best-it/license-check": "^0.1.0",
-        "infection/infection": "^0.21.5",
-        "pdepend/pdepend": "2.8.*"
+        "infection/infection": "^0.32",
+        "systemsdk/phpcpd": "^8.3",
+        "phpcompatibility/php-compatibility": "^10.0.0@dev"
     },
-    "suggest": {
-        "phpcompatibility/php-compatibility": "If you want to check for php version compatibility. Please use at least ^9.0."
-    },
+  "suggest": {
+    "phpcompatibility/php-compatibility": "If you want to check for php version compatibility. Please use at least ^9.0."
+  },
     "config": {
         "allow-plugins": {
             "dealerdirect/phpcodesniffer-composer-installer": true,

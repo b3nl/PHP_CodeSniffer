@@ -17,7 +17,7 @@ class ThrowsTagSniffTest extends AuthorTagSniffTest
      *
      * @return array The required constants of a class. The second value is a possible value which should be checked.
      */
-    public function getRequiredConstantAsserts(): array
+    public static function getRequiredConstantAsserts(): array
     {
         return parent::getRequiredConstantAsserts() + [
             'CODE_TAG_MISSING_DESC_DESC' => ['CODE_TAG_MISSING_DESC_DESC', 'MissingThrowDescription'],

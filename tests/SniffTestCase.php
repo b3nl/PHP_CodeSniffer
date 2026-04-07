@@ -4,13 +4,23 @@ declare(strict_types=1);
 
 namespace BestIt;
 
-use Exception;
 use PHP_CodeSniffer\Files\File;
 use ReflectionClass;
 use ReflectionException;
 use SlevomatCodingStandard\Sniffs\TestCase as SlevomatTestCase;
+use function array_map;
+use function array_merge;
+use function array_reverse;
+use function basename;
 use function dirname;
+use function explode;
+use function glob;
 use function implode;
+use function preg_match;
+use function range;
+use function sprintf;
+use function str_replace;
+use function strpos;
 use const DIRECTORY_SEPARATOR;
 
 /**
@@ -212,6 +222,83 @@ abstract class SniffTestCase extends SlevomatTestCase
     }
 
     /**
+     * Returns a list of files which start with correct*.
+     *
+     * @return array With the path to a file as the first parameter.
+     */
+    public function getCorrectFileListAsDataProvider(): array
+    {
+        $providerFiles = [];
+
+        foreach (glob($this->getFixturePath() . '/correct/*.php') as $file) {
+            $providerFiles[basename($file)] = [$file];
+        }
+
+        return $providerFiles;
+    }
+
+    /**
+     * Returns the metadata from the given file name if there is one.
+     *
+     * @param string $file
+     * @param array $errorData This method changes a marker for other files, if there is a file with a fixed marker.
+     *
+     * @return array<string, string, ...int>
+     */
+    protected function getMetadataFromFilenameAsAssertArray(string $file, array &$errorData): array
+    {
+        $fileMetaData = [];
+        $fileName = basename($file);
+        $matches = [];
+        $pattern = '/(?P<code>\w+)(\(\w*\))?\.(?P<errorLines>[\d\-\,]*)(?P<fixedSuffix>\.fixed)?\.php/';
+
+        if (preg_match($pattern, $fileName, $matches)) {
+            if (@$matches['fixedSuffix']) {
+                @$errorData[str_replace('.fixed', '', $fileName)][] = true;
+            } else {
+                $errorLines = explode(',', $matches['errorLines']);
+
+                // Check if there is a range.
+                foreach ($errorLines as $index => $errorLine) {
+                    if (strpos($errorLine, '-') !== false) {
+                        unset($errorLines[$index]);
+
+                        $errorLines = array_merge($errorLines, range(...explode('-', $errorLine)));
+                    }
+                }
+
+                $fileMetaData = [
+                    $file,
+                    $matches['code'],
+                    array_map('intval', $errorLines),
+                ];
+            }
+        }
+
+        return $fileMetaData;
+    }
+
+    /**
+     * Loads the assertion data out of the file names.
+     *
+     * @param bool $forErrors Load data for errors?
+     *
+     * @return array The assert data as data providers.
+     */
+    protected function loadAssertData(bool $forErrors = true): array
+    {
+        $errorData = [];
+
+        foreach ($this->getFixtureFiles($forErrors) as $file) {
+            if ($fileMetaData = $this->getMetadataFromFilenameAsAssertArray($file, $errorData)) {
+                $errorData[basename($file)] = $fileMetaData;
+            }
+        }
+
+        return $errorData;
+    }
+
+    /**
      * Returns a list of files which start with correct*
      *
      * @return array With the path to a file as the first parameter.
@@ -318,6 +405,21 @@ abstract class SniffTestCase extends SlevomatTestCase
         }
 
         return false;
+    }
+
+    /**
+     * Returns the test files for errors or warnings.
+     *
+     * @param bool $forErrors Load data for errors?
+     *
+     * @return array The testable files.
+     */
+    private function getFixtureFiles(bool $forErrors = true): array
+    {
+        return array_reverse(glob(sprintf(
+            $this->getFixturePath() . '/with_%s/*.php',
+            $forErrors ? 'errors' : 'warnings',
+        ))) ?: [];
     }
 
     /**

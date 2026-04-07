@@ -7,9 +7,11 @@ namespace BestIt\Sniffs\Functions;
 use BestIt\CodeSniffer\Helper\TokenHelper;
 use BestIt\Sniffs\AbstractSniff;
 use BestIt\Sniffs\FunctionRegistrationTrait;
+
 use function array_filter;
 use function array_shift;
 use function array_walk;
+
 use const T_CLOSURE;
 use const T_FUNCTION;
 use const T_RETURN;

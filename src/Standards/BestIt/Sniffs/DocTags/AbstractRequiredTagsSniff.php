@@ -8,6 +8,7 @@ use BestIt\CodeSniffer\Helper\DocTagHelper;
 use BestIt\Sniffs\AbstractSniff;
 use BestIt\Sniffs\DocPosProviderTrait;
 use Closure;
+
 use function array_filter;
 use function array_key_exists;
 use function array_map;
@@ -234,7 +235,7 @@ abstract class AbstractRequiredTagsSniff extends AbstractSniff
      *
      * @return bool|string
      */
-    private function hasFixCallback(string $rule, string $tag)
+    private function hasFixCallback(string $rule, string $tag): bool|string
     {
         return method_exists($this, $method = sprintf('fix%s%s', ucfirst($rule), ucfirst($tag)))
             ? $method

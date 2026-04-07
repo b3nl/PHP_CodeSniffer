@@ -16,19 +16,9 @@ use PHP_CodeSniffer\Sniffs\Sniff;
 class SpaceAfterDeclareSniff implements Sniff
 {
     /**
-     * Error message when no whitespace is found.
+     * Multiple declare-statements SHOULD be grouped without a blank line.
      */
-    public const MESSAGE_NO_WHITESPACE_FOUND = 'There is no whitespace after declare-statement.';
-
-    /**
-     * There MUST be one empty line after declare-statement.
-     */
-    public const CODE_NO_WHITESPACE_FOUND = 'NoWhitespaceFound';
-
-    /**
-     * Error message when more than one whitespaces are found.
-     */
-    public const MESSAGE_MUCH_WHITESPACE_FOUND = 'There are more than one whitespaces after declare-statement.';
+    public const CODE_GROUP_BLANK_LINE_FOUND = 'GroupBlankLineFound';
 
     /**
      * THERE MUST be just one single line after the declare statement.
@@ -36,25 +26,108 @@ class SpaceAfterDeclareSniff implements Sniff
     public const CODE_MUCH_WHITESPACE_FOUND = 'MuchWhitespaceFound';
 
     /**
+     * There MUST be one empty line after declare-statement.
+     */
+    public const CODE_NO_WHITESPACE_FOUND = 'NoWhitespaceFound';
+
+    /**
      * Error message when blank lines in a group are found.
      */
     public const MESSAGE_GROUP_BLANK_LINE_FOUND = 'Multpile declare-statements should be grouped without a blank line.';
 
     /**
-     * Multiple declare-statements SHOULD be grouped without a blank line.
+     * Error message when more than one whitespaces are found.
      */
-    public const CODE_GROUP_BLANK_LINE_FOUND = 'GroupBlankLineFound';
+    public const MESSAGE_MUCH_WHITESPACE_FOUND = 'There are more than one whitespaces after declare-statement.';
 
     /**
-     * Registers the tokens that this sniff wants to listen for.
-     *
-     * @return int[] List of tokens to listen for
+     * Error message when no whitespace is found.
      */
-    public function register(): array
+    public const MESSAGE_NO_WHITESPACE_FOUND = 'There is no whitespace after declare-statement.';
+
+    /**
+     * Handles blank lines found in declare group.
+     *
+     * @param File $phpcsFile The php cs file
+     * @param int $semicolonPtr Pointer to the semicolon
+     * @param int $secondSpacePtr Pointer to the second space
+     * @param int $nextNonSpacePtr Pointer to the next non space token
+     *
+     * @return void
+     */
+    private function handleBlankLineInGroup(
+        File $phpcsFile,
+        int $semicolonPtr,
+        int $secondSpacePtr,
+        int $nextNonSpacePtr,
+    ): void {
+        $fixGroupBlankLines = $phpcsFile->addFixableError(
+            self::MESSAGE_GROUP_BLANK_LINE_FOUND,
+            $semicolonPtr,
+            static::CODE_GROUP_BLANK_LINE_FOUND,
+        );
+
+        if ($fixGroupBlankLines) {
+            $phpcsFile->fixer->beginChangeset();
+            for ($i = $secondSpacePtr; $i < $nextNonSpacePtr; $i++) {
+                $phpcsFile->fixer->replaceToken($i, '');
+            }
+            $phpcsFile->fixer->endChangeset();
+        }
+    }
+
+    /**
+     * Handles when more than one whitespaces are found.
+     *
+     * @param File $phpcsFile The php cs file
+     * @param int $semicolonPtr Pointer to the semicolon
+     * @param int $secondSpacePtr Pointer to the second space
+     * @param int $nextNonSpacePtr Pointer to the next non space token
+     *
+     * @return void
+     */
+    private function handleMuchWhitespacesFound(
+        File $phpcsFile,
+        int $semicolonPtr,
+        int $secondSpacePtr,
+        int $nextNonSpacePtr,
+    ): void {
+        $fixMuchWhitespaces = $phpcsFile->addFixableError(
+            self::MESSAGE_MUCH_WHITESPACE_FOUND,
+            $semicolonPtr,
+            static::CODE_MUCH_WHITESPACE_FOUND,
+        );
+
+        if ($fixMuchWhitespaces) {
+            $phpcsFile->fixer->beginChangeset();
+            for ($i = $secondSpacePtr; $i < $nextNonSpacePtr; $i++) {
+                $phpcsFile->fixer->replaceToken($i, '');
+            }
+            $phpcsFile->fixer->endChangeset();
+        }
+    }
+
+    /**
+     * Handles when no whitespace is found.
+     *
+     * @param File $phpcsFile The php cs file
+     * @param int $semicolonPtr Pointer to the semicolon token
+     *
+     * @return void
+     */
+    private function handleNoWhitespaceFound(File $phpcsFile, int $semicolonPtr): void
     {
-        return [
-            T_DECLARE,
-        ];
+        $fixNoWhitespace = $phpcsFile->addFixableError(
+            self::MESSAGE_NO_WHITESPACE_FOUND,
+            $semicolonPtr,
+            static::CODE_NO_WHITESPACE_FOUND,
+        );
+
+        if ($fixNoWhitespace) {
+            $phpcsFile->fixer->beginChangeset();
+            $phpcsFile->fixer->addNewline($semicolonPtr);
+            $phpcsFile->fixer->endChangeset();
+        }
     }
 
     /**
@@ -78,7 +151,7 @@ class SpaceAfterDeclareSniff implements Sniff
 
         $nextDeclarePtr = $phpcsFile->findNext(T_DECLARE, $semicolonPtr, null, false);
 
-        $whiteSpaceInGroupPtr = $phpcsFile->findNext(T_WHITESPACE, $secondSpacePtr, $nextDeclarePtr, false);
+        $whiteSpaceInGroupPtr = $phpcsFile->findNext(T_WHITESPACE, $secondSpacePtr, $nextDeclarePtr ?: null, false);
 
 
         //Declare statement group detected
@@ -116,87 +189,14 @@ class SpaceAfterDeclareSniff implements Sniff
     }
 
     /**
-     * Handles when no whitespace is found.
+     * Registers the tokens that this sniff wants to listen for.
      *
-     * @param File $phpcsFile The php cs file
-     * @param int $semicolonPtr Pointer to the semicolon token
-     *
-     * @return void
+     * @return int[] List of tokens to listen for
      */
-    private function handleNoWhitespaceFound(File $phpcsFile, int $semicolonPtr): void
+    public function register(): array
     {
-        $fixNoWhitespace = $phpcsFile->addFixableError(
-            self::MESSAGE_NO_WHITESPACE_FOUND,
-            $semicolonPtr,
-            static::CODE_NO_WHITESPACE_FOUND,
-        );
-
-        if ($fixNoWhitespace) {
-            $phpcsFile->fixer->beginChangeset();
-            $phpcsFile->fixer->addNewline($semicolonPtr);
-            $phpcsFile->fixer->endChangeset();
-        }
-    }
-
-    /**
-     * Handles when more than one whitespaces are found.
-     *
-     * @param File $phpcsFile The php cs file
-     * @param int $semicolonPtr Pointer to the semicolon
-     * @param int $secondSpacePtr Pointer to the second space
-     * @param int $nextNonSpacePtr Pointer to the next non space token
-     *
-     * @return void
-     */
-    private function handleMuchWhitespacesFound(
-        File $phpcsFile,
-        int $semicolonPtr,
-        int $secondSpacePtr,
-        int $nextNonSpacePtr,
-    ): void {
-        $fixMuchWhitespaces = $phpcsFile->addFixableError(
-            self::MESSAGE_MUCH_WHITESPACE_FOUND,
-            $semicolonPtr,
-            static::CODE_MUCH_WHITESPACE_FOUND,
-        );
-
-        if ($fixMuchWhitespaces) {
-            $phpcsFile->fixer->beginChangeset();
-            for ($i = $secondSpacePtr; $i < $nextNonSpacePtr; $i++) {
-                $phpcsFile->fixer->replaceToken($i, '');
-            }
-            $phpcsFile->fixer->endChangeset();
-        }
-    }
-
-    /**
-     * Handles blank lines found in declare group.
-     *
-     * @param File $phpcsFile The php cs file
-     * @param int $semicolonPtr Pointer to the semicolon
-     * @param int $secondSpacePtr Pointer to the second space
-     * @param int $nextNonSpacePtr Pointer to the next non space token
-     *
-     * @return void
-     */
-    private function handleBlankLineInGroup(
-        File $phpcsFile,
-        int $semicolonPtr,
-        int $secondSpacePtr,
-        int $nextNonSpacePtr,
-    ): void {
-        $fixGroupBlankLines = $phpcsFile->addFixableError(
-            self::MESSAGE_GROUP_BLANK_LINE_FOUND,
-            $semicolonPtr,
-            static::CODE_GROUP_BLANK_LINE_FOUND,
-        );
-
-        if ($fixGroupBlankLines) {
-            $phpcsFile->fixer->beginChangeset();
-            for ($i = $secondSpacePtr; $i < $nextNonSpacePtr; $i++) {
-                $phpcsFile->fixer->replaceToken($i, '');
-            }
-            $phpcsFile->fixer->endChangeset();
-        }
+        return [
+            T_DECLARE,
+        ];
     }
 }

@@ -8,7 +8,9 @@ use BestIt\CodeSniffer\CodeError;
 use BestIt\CodeSniffer\CodeWarning;
 use BestIt\CodeSniffer\Helper\TokenHelper;
 use BestIt\Sniffs\AbstractSniff;
+
 use function array_merge;
+
 use const T_ASPERAND;
 use const T_BOOLEAN_NOT;
 use const T_INSTANCEOF;
@@ -126,7 +128,7 @@ class ParasOfNegativeInstanceOfSniff extends AbstractSniff
         return TokenHelper::findPreviousExcluding(
             $file,
             // And skip object property accesses
-            array_merge(TokenHelper::$ineffectiveTokenCodes, [T_ASPERAND, T_OBJECT_OPERATOR, T_STRING, T_VARIABLE]),
+            array_merge(TokenHelper::INEFFECTIVE_TOKEN_CODES, [T_ASPERAND, T_OBJECT_OPERATOR, T_STRING, T_VARIABLE]),
             $stackPosition - 1,
         );
     }

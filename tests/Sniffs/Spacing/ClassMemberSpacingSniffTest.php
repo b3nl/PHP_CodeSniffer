@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace BestIt\Sniffs\Spacing;
 
-use BestIt\Sniffs\DefaultSniffIntegrationTestTrait;
+use BestIt\Sniffs\SniffCorrectFilesTrait;
+use BestIt\Sniffs\SniffErrorFilesTrait;
 use BestIt\Sniffs\TestTokenRegistrationTrait;
 use BestIt\SniffTestCase;
 use BestIt\TestRequiredConstantsTrait;
+
 use const T_ANON_CLASS;
 use const T_CLASS;
 use const T_ENUM;
@@ -16,7 +18,8 @@ use const T_TRAIT;
 
 class ClassMemberSpacingSniffTest extends SniffTestCase
 {
-    use DefaultSniffIntegrationTestTrait;
+    use SniffCorrectFilesTrait;
+    use SniffErrorFilesTrait;
     use TestTokenRegistrationTrait;
     use TestRequiredConstantsTrait;
 
@@ -31,7 +34,7 @@ class ClassMemberSpacingSniffTest extends SniffTestCase
         ];
     }
 
-    public function getRequiredConstantAsserts(): iterable
+    public static function getRequiredConstantAsserts(): iterable
     {
         return [
             'CODE_INCORRECT_COUNT_OF_BLANK_LINES_BETWEEN_MEMBERS' => [

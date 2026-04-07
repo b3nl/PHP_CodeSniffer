@@ -7,14 +7,19 @@ namespace BestIt\Sniffs\DocTags;
 use BestIt\CodeSniffer\CodeError;
 use BestIt\CodeSniffer\CodeWarning;
 use BestIt\CodeSniffer\Helper\TokenHelper;
+
 use function array_filter;
 use function array_values;
 use function in_array;
 use function preg_quote;
 use function strtolower;
+
 use const ARRAY_FILTER_USE_KEY;
+use const T_ATTRIBUTE;
+use const T_ATTRIBUTE_END;
 use const T_CLOSE_PARENTHESIS;
 use const T_DOC_COMMENT_OPEN_TAG;
+use const T_FUNCTION;
 use const T_VARIABLE;
 
 /**
@@ -188,25 +193,32 @@ class ParamTagSniff extends AbstractTagSniff
      */
     protected function findAllVariablePositions(): array
     {
+        $searchStart = $this->stackPos + 1;
+
+        // Skip past any PHP 8 attributes (#[...]) before the function declaration.
+        $attrStart = $this->file->findNext([T_ATTRIBUTE], $searchStart);
+        while ($attrStart !== false) {
+            $attrEnd = $this->file->findNext([T_ATTRIBUTE_END], $attrStart + 1);
+            if ($attrEnd === false) {
+                break;
+            }
+            // Only skip if the attribute comes before the next function keyword.
+            $nextFunction = $this->file->findNext([T_FUNCTION], $searchStart);
+            if ($nextFunction !== false && $attrStart > $nextFunction) {
+                break;
+            }
+            $searchStart = $attrEnd + 1;
+            $attrStart = $this->file->findNext([T_ATTRIBUTE], $searchStart);
+        }
+
+        $closeParen = $this->file->findNext([T_CLOSE_PARENTHESIS], $searchStart);
+
         return TokenHelper::findNextAll(
             $this->file,
             [T_VARIABLE],
             $this->stackPos + 1,
-            $this->file->findNext([T_CLOSE_PARENTHESIS], $this->stackPos + 1),
+            $closeParen,
         );
-    }
-
-    /**
-     * Returns a pattern to check if the content is valid.
-     *
-     * @return string The pattern which matches successful.
-     */
-    protected function getValidPattern(): string
-    {
-        $varOfThisTag = $this->getArgumentTokenOfTag();
-
-        return '/(?P<type>[\w|\|\[\]]*) ?(?P<var>' . preg_quote($varOfThisTag['content'], '/') .
-            ') ?(?P<desc>.*)/m';
     }
 
     /**
@@ -221,6 +233,19 @@ class ParamTagSniff extends AbstractTagSniff
         }
 
         return $this->argumentToken;
+    }
+
+    /**
+     * Returns a pattern to check if the content is valid.
+     *
+     * @return string The pattern which matches successful.
+     */
+    protected function getValidPattern(): string
+    {
+        $varOfThisTag = $this->getArgumentTokenOfTag();
+
+        return '/(?P<type>[\w|\|\[\]]*) ?(?P<var>' . preg_quote($varOfThisTag['content'], '/') .
+            ') ?(?P<desc>.*)/m';
     }
 
     /**

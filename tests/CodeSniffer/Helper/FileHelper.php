@@ -8,6 +8,7 @@ use PHP_CodeSniffer\Config;
 use PHP_CodeSniffer\Exceptions\RuntimeException;
 use PHP_CodeSniffer\Files\File;
 use PHP_CodeSniffer\Ruleset;
+
 use function file_get_contents;
 
 /**

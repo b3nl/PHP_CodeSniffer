@@ -4,16 +4,19 @@ declare(strict_types=1);
 
 namespace BestIt\Sniffs\Formatting;
 
-use BestIt\Sniffs\DefaultSniffIntegrationTestTrait;
+use BestIt\Sniffs\SniffCorrectFilesTrait;
+use BestIt\Sniffs\SniffErrorFilesTrait;
 use BestIt\Sniffs\TestTokenRegistrationTrait;
 use BestIt\SniffTestCase;
 use BestIt\TestRequiredConstantsTrait;
+
 use const T_ARRAY;
 use const T_OPEN_SHORT_ARRAY;
 
 class TrailingArrayCommaSniffTest extends SniffTestCase
 {
-    use DefaultSniffIntegrationTestTrait;
+    use SniffCorrectFilesTrait;
+    use SniffErrorFilesTrait;
     use TestRequiredConstantsTrait;
     use TestTokenRegistrationTrait;
 
@@ -25,7 +28,7 @@ class TrailingArrayCommaSniffTest extends SniffTestCase
         ];
     }
 
-    public function getRequiredConstantAsserts(): array
+    public static function getRequiredConstantAsserts(): array
     {
         return [
             'CODE_MISSING_TRAILING_COMMA' => ['CODE_MISSING_TRAILING_COMMA', 'MissingTrailingComma'],

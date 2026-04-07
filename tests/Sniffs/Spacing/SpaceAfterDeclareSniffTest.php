@@ -16,14 +16,23 @@ use PHP_CodeSniffer\Files\File;
 class SpaceAfterDeclareSniffTest extends SniffTestCase
 {
     /**
-     * Test space after declare with no errors.
+     * Checks the given file with defined error codes.
      *
-     * @return void
+     * @param string $file Filename of the fixture
+     * @param array $sniffProperties Array of sniff properties
+     *
+     * @return File The php cs file
      */
-    public function testSpaceAfterDeclareCorrect(): void
+    protected function checkFileAgainstSniff(string $file, array $sniffProperties = []): File
     {
-        $this->assertNoSniffErrorInFile(
-            $this->checkFile($this->getFixtureFilePath('Correct.php')),
+        return $this->checkFile(
+            $file,
+            $sniffProperties,
+            [
+                SpaceAfterDeclareSniff::CODE_NO_WHITESPACE_FOUND,
+                SpaceAfterDeclareSniff::CODE_MUCH_WHITESPACE_FOUND,
+                SpaceAfterDeclareSniff::CODE_GROUP_BLANK_LINE_FOUND,
+            ],
         );
     }
 
@@ -37,24 +46,6 @@ class SpaceAfterDeclareSniffTest extends SniffTestCase
         $this->assertNoSniffErrorInFile(
             $this->checkFile($this->getFixtureFilePath('NoFollowingStatement.php')),
         );
-    }
-
-    /**
-     * Test no whitespace found error and fix.
-     *
-     * @return void
-     */
-    public function testNoWhitespaceFound(): void
-    {
-        $report = $this->checkFile($this->getFixtureFilePath('NoWhitespaceFound.php'));
-
-        $this->assertSniffError(
-            $report,
-            3,
-            SpaceAfterDeclareSniff::CODE_NO_WHITESPACE_FOUND,
-        );
-
-        $this->assertAllFixedInFile($report);
     }
 
     /**
@@ -102,23 +93,32 @@ class SpaceAfterDeclareSniffTest extends SniffTestCase
     }
 
     /**
-     * Checks the given file with defined error codes.
+     * Test no whitespace found error and fix.
      *
-     * @param string $file Filename of the fixture
-     * @param array $sniffProperties Array of sniff properties
-     *
-     * @return File The php cs file
+     * @return void
      */
-    protected function checkFileAgainstSniff(string $file, array $sniffProperties = []): File
+    public function testNoWhitespaceFound(): void
     {
-        return $this->checkFile(
-            $file,
-            $sniffProperties,
-            [
-                SpaceAfterDeclareSniff::CODE_NO_WHITESPACE_FOUND,
-                SpaceAfterDeclareSniff::CODE_MUCH_WHITESPACE_FOUND,
-                SpaceAfterDeclareSniff::CODE_GROUP_BLANK_LINE_FOUND,
-            ],
+        $report = $this->checkFile($this->getFixtureFilePath('NoWhitespaceFound.php'));
+
+        $this->assertSniffError(
+            $report,
+            3,
+            SpaceAfterDeclareSniff::CODE_NO_WHITESPACE_FOUND,
+        );
+
+        $this->assertAllFixedInFile($report);
+    }
+
+    /**
+     * Test space after declare with no errors.
+     *
+     * @return void
+     */
+    public function testSpaceAfterDeclareCorrect(): void
+    {
+        $this->assertNoSniffErrorInFile(
+            $this->checkFile($this->getFixtureFilePath('Correct.php')),
         );
     }
 }

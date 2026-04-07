@@ -9,19 +9,25 @@ use BestIt\CodeSniffer\CodeWarning;
 use BestIt\Sniffs\AbstractSniff;
 use BestIt\Sniffs\DocPosProviderTrait;
 use BestIt\Sniffs\SuppressingTrait;
-use SlevomatCodingStandard\Helpers\Annotation\ReturnAnnotation;
+use SlevomatCodingStandard\Helpers\Annotation;
 use SlevomatCodingStandard\Helpers\FunctionHelper;
 use SlevomatCodingStandard\Helpers\TokenHelper;
 use SlevomatCodingStandard\Helpers\TypeHintHelper;
+
 use function array_filter;
 use function array_intersect;
+use function array_map;
 use function count;
 use function explode;
+use function implode;
 use function in_array;
 use function phpversion;
+use function strlen;
+use function strpos;
 use function strtolower;
 use function substr;
 use function version_compare;
+
 use const T_FUNCTION;
 
 /**
@@ -49,6 +55,8 @@ class ReturnTypeDeclarationSniff extends AbstractSniff
      * The return types which match null.
      */
     private const NULL_TYPES = ['null', 'void'];
+
+    private const RETURN_TYPE_SEPARATOR = ' | ';
 
     /**
      * Null as a return has no real return type, so we use this as a fallback.
@@ -113,6 +121,7 @@ class ReturnTypeDeclarationSniff extends AbstractSniff
 
     /**
      * Returns true if this sniff may run.
+     *
      * @return bool
      */
     protected function areRequirementsMet(): bool
@@ -131,27 +140,37 @@ class ReturnTypeDeclarationSniff extends AbstractSniff
         $returnTypeHint = '';
         $typeCount = count($this->typesForFix);
 
-        foreach ($this->typesForFix as $type) {
-            // We add the default value if only null is used (which has no real native return type).
-            if ($type === 'null' && ($typeCount === 1)) {
-                $returnTypeHint = $this->defaultNullReturn;
-                break; // We still need this break to prevent further execution of the default value.
-            }
-
-            // We add the question mark if there is a nullable type.
-            if (in_array($type, self::NULL_TYPES, true) && ($typeCount > 1)) {
-                $returnTypeHint = '?' . $returnTypeHint;
-                continue; // We still need this continue to prevent further execution of the questionmark.
-            }
-
-            // We add a fixable "native" type. We do not fix custom classes (because it would have side effects to the
-            // imported usage of classes.
-            $returnTypeHint .= (TypeHintHelper::isSimpleTypeHint($type))
-                ? TypeHintHelper::convertLongSimpleTypeHintToShort($type)
-                : $type;
+        if ($typeCount === 1) {
+            return $this->typesForFix[0] === 'null' ? $this->defaultNullReturn : $this->typesForFix[0];
         }
 
-        return $returnTypeHint;
+        if ($typeCount === 2) {
+            foreach ($this->typesForFix as $type) {
+                // We add the question mark if there is a nullable type.
+                if (in_array($type, self::NULL_TYPES, true)) {
+                    $returnTypeHint = '?' . $returnTypeHint;
+                    continue; // We still need this continue to prevent further execution of the questionmark.
+                }
+
+                // We add a fixable "native" type. We do not fix custom classes (because it would have side effects to
+                // the imported usage of classes.
+                $returnTypeHint .= (TypeHintHelper::isSimpleTypeHint($type))
+                    ? TypeHintHelper::convertLongSimpleTypeHintToShort($type)
+                    : $type;
+            }
+
+            return $returnTypeHint;
+        }
+
+        return implode(
+            '|',
+            array_map(
+                fn(string $type): string => TypeHintHelper::isSimpleTypeHint($type)
+                    ? TypeHintHelper::convertLongSimpleTypeHintToShort($type)
+                    : $type,
+                $this->typesForFix,
+            ),
+        );
     }
 
     /**
@@ -166,7 +185,7 @@ class ReturnTypeDeclarationSniff extends AbstractSniff
         // Satisfy PHPMD
         unset($exception);
 
-        // This method is called, if it the error is not marked as fixable. So check our internal marker again.
+        // This method is called, if the error is not marked as fixable. So check our internal marker again.
         if ($this->typesForFix) {
             $this->addReturnType();
         }
@@ -189,15 +208,26 @@ class ReturnTypeDeclarationSniff extends AbstractSniff
     /**
      * Returns the return types of the annotation.
      *
-     * @param null|ReturnAnnotation $annotation
+     * @param null|Annotation $annotation
      *
      * @return array
      */
-    private function getReturnsFromAnnotation(?ReturnAnnotation $annotation): array
+    private function getReturnsFromAnnotation(?Annotation $annotation): array
     {
-        return $this->isFilledReturnAnnotation($annotation)
-            ? explode('|', preg_split('~\\s+~', $annotation->getContent())[0])
-            : [];
+        $returns = [];
+
+        if ($this->isFilledReturnAnnotation($annotation)) {
+            $annotationValue = (string) $annotation->getValue();
+
+            if (strpos($annotationValue, self::RETURN_TYPE_SEPARATOR) === false) {
+                $returns[] = $annotationValue;
+            } else {
+                // The annotated value can be something like (array | null | string)
+                $returns = explode(self::RETURN_TYPE_SEPARATOR, substr($annotationValue, 1, strlen($annotationValue) - 2));
+            }
+        }
+
+        return $returns;
     }
 
     /**
@@ -206,11 +236,11 @@ class ReturnTypeDeclarationSniff extends AbstractSniff
      * Usable means, that there should be one type != mixed in the return-annotation or a nullable type, which means
      * 2 types like null|$ANYTYPE.
      *
-     * @param ReturnAnnotation $annotation
+     * @param Annotation $annotation
      *
      * @return array|null Null if there are no usable types or the usable types.
      */
-    private function getUsableReturnTypes(ReturnAnnotation $annotation): ?array
+    private function getUsableReturnTypes(Annotation $annotation): ?array
     {
         $return = null;
 
@@ -223,7 +253,7 @@ class ReturnTypeDeclarationSniff extends AbstractSniff
                 version_compare(phpversion(), '7.1.0', '>=') &&
                 (count(array_intersect($returnTypes, self::NULL_TYPES)) === 1);
 
-            $return = ($justOneReturn || $isNullableType) ? $returnTypes : null;
+            $return = ($justOneReturn || $isNullableType || $returnTypeCount > 2) ? $returnTypes : null;
         }
 
         return $return;
@@ -258,13 +288,13 @@ class ReturnTypeDeclarationSniff extends AbstractSniff
     /**
      * Check if function has a return annotation
      *
-     * @param ReturnAnnotation|null $returnAnnotation Annotation of the function
+     * @param Annotation|null $returnAnnotation Annotation of the function
      *
      * @return bool Function has a annotation
      */
-    private function isFilledReturnAnnotation(?ReturnAnnotation $returnAnnotation = null): bool
+    private function isFilledReturnAnnotation(?Annotation $returnAnnotation = null): bool
     {
-        return $returnAnnotation && $returnAnnotation->getContent();
+        return $returnAnnotation && (string) $returnAnnotation->getValue();
     }
 
     /**
@@ -307,9 +337,9 @@ class ReturnTypeDeclarationSniff extends AbstractSniff
     /**
      * Loads the return annotation for this method.
      *
-     * @return null|ReturnAnnotation
+     * @return null|Annotation
      */
-    protected function loadReturnAnnotation(): ?ReturnAnnotation
+    protected function loadReturnAnnotation(): ?Annotation
     {
         return FunctionHelper::findReturnAnnotation($this->getFile(), $this->stackPos);
     }
@@ -337,7 +367,7 @@ class ReturnTypeDeclarationSniff extends AbstractSniff
 
     public function register(): array
     {
-        return TokenHelper::$functionTokenCodes;
+        return TokenHelper::FUNCTION_TOKEN_CODES;
     }
 
     /**

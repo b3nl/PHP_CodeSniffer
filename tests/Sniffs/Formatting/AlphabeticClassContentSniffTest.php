@@ -4,7 +4,8 @@ declare(strict_types=1);
 
 namespace BestIt\Sniffs\Formatting;
 
-use BestIt\Sniffs\DefaultSniffIntegrationTestTrait;
+use BestIt\Sniffs\SniffCorrectFilesTrait;
+use BestIt\Sniffs\SniffWarningFilesTrait;
 use BestIt\Sniffs\TestTokenRegistrationTrait;
 use BestIt\SniffTestCase;
 use BestIt\TestRequiredConstantsTrait;
@@ -18,7 +19,8 @@ use PHP_CodeSniffer\Util\Tokens;
  */
 class AlphabeticClassContentSniffTest extends SniffTestCase
 {
-    use DefaultSniffIntegrationTestTrait;
+    use SniffCorrectFilesTrait;
+    use SniffWarningFilesTrait;
     use TestRequiredConstantsTrait;
     use TestTokenRegistrationTrait;
 
@@ -33,6 +35,18 @@ class AlphabeticClassContentSniffTest extends SniffTestCase
     }
 
     /**
+     * Returns the names of the required constants.
+     *
+     * @return array The required constants of a class. The second value is a possible value which should be checked.
+     */
+    public static function getRequiredConstantAsserts(): array
+    {
+        return [
+            'CODE_SORT_ALPHABETICALLY' => ['CODE_SORT_ALPHABETICALLY', 'SortAlphabetically'],
+        ];
+    }
+
+    /**
      * Sets up the test.
      *
      * @return void
@@ -42,17 +56,5 @@ class AlphabeticClassContentSniffTest extends SniffTestCase
         parent::setUp();
 
         $this->testedObject = new AlphabeticClassContentSniff();
-    }
-
-    /**
-     * Returns the names of the required constants.
-     *
-     * @return array The required constants of a class. The second value is a possible value which should be checked.
-     */
-    public function getRequiredConstantAsserts(): array
-    {
-        return [
-            'CODE_SORT_ALPHABETICALLY' => ['CODE_SORT_ALPHABETICALLY', 'SortAlphabetically'],
-        ];
     }
 }

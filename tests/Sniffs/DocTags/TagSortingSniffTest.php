@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace BestIt\Sniffs\DocTags;
 
-use BestIt\Sniffs\DefaultSniffIntegrationTestTrait;
+use BestIt\Sniffs\SniffCorrectFilesTrait;
+use BestIt\Sniffs\SniffWarningFilesTrait;
 use BestIt\Sniffs\TestTokenRegistrationTrait;
 use BestIt\SniffTestCase;
 use BestIt\TestRequiredConstantsTrait;
+
 use const T_DOC_COMMENT_OPEN_TAG;
 
 /**
@@ -18,22 +20,10 @@ use const T_DOC_COMMENT_OPEN_TAG;
  */
 class TagSortingSniffTest extends SniffTestCase
 {
-    use DefaultSniffIntegrationTestTrait;
+    use SniffCorrectFilesTrait;
+    use SniffWarningFilesTrait;
     use TestRequiredConstantsTrait;
     use TestTokenRegistrationTrait;
-
-    /**
-     * Returns the names of the required constants.
-     *
-     * @return array The required constants of a class. The second value is a possible value which should be checked.
-     */
-    public function getRequiredConstantAsserts(): array
-    {
-        return [
-            'CODE_MISSING_NEWLINE_BETWEEN_TAGS' => ['CODE_MISSING_NEWLINE_BETWEEN_TAGS', 'MissingNewlineBetweenTags'],
-            'CODE_WRONG_TAG_SORTING' => ['CODE_WRONG_TAG_SORTING', 'WrongTagSorting'],
-        ];
-    }
 
     /**
      * Returns the tokens which should be checked.
@@ -43,6 +33,19 @@ class TagSortingSniffTest extends SniffTestCase
     protected function getExpectedTokens(): array
     {
         return [T_DOC_COMMENT_OPEN_TAG];
+    }
+
+    /**
+     * Returns the names of the required constants.
+     *
+     * @return array The required constants of a class. The second value is a possible value which should be checked.
+     */
+    public static function getRequiredConstantAsserts(): array
+    {
+        return [
+            'CODE_MISSING_NEWLINE_BETWEEN_TAGS' => ['CODE_MISSING_NEWLINE_BETWEEN_TAGS', 'MissingNewlineBetweenTags'],
+            'CODE_WRONG_TAG_SORTING' => ['CODE_WRONG_TAG_SORTING', 'WrongTagSorting'],
+        ];
     }
 
     /**

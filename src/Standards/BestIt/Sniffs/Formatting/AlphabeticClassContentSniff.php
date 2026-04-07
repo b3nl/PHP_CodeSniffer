@@ -8,8 +8,10 @@ use BestIt\CodeSniffer\Helper\PropertyHelper;
 use BestIt\CodeSniffer\Helper\TokenHelper;
 use BestIt\Sniffs\AbstractSniff;
 use BestIt\Sniffs\ClassRegistrationTrait;
+
 use function array_values;
 use function natsort;
+
 use const T_CONST;
 use const T_FUNCTION;
 use const T_STRING;

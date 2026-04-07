@@ -7,10 +7,12 @@ namespace BestIt\Sniffs\DocTags;
 use BestIt\CodeSniffer\Helper\TokenHelper;
 use BestIt\Sniffs\AbstractSniff;
 use PHP_CodeSniffer\Util\Tokens;
+
 use function class_exists;
 use function implode;
 use function spl_autoload_call;
 use function substr;
+
 use const T_DOC_COMMENT_CLOSE_TAG;
 use const T_DOC_COMMENT_STRING;
 use const T_DOC_COMMENT_TAG;

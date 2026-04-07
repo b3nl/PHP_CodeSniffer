@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace BestIt\Sniffs\Commenting;
 
+use BestIt\Sniffs\SniffErrorFilesTrait;
+use BestIt\Sniffs\SniffWarningFilesTrait;
+
 use const T_VARIABLE;
 
 /**
@@ -12,8 +15,11 @@ use const T_VARIABLE;
  * @author blange <bjoern.lange@bestit-online.de>
  * @package BestIt\Sniffs\Commenting
  */
-class PropertyDocSniffTest extends AbstractDocSniffTest
+class PropertyDocSniffTest extends AbstractDocSniffTestCase
 {
+    use SniffErrorFilesTrait;
+    use SniffWarningFilesTrait;
+
     /**
      * Returns the tokens which should be checked.
      *

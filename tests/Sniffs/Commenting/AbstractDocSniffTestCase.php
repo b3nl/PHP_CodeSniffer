@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace BestIt\Sniffs\Commenting;
 
-use BestIt\SniffTestCase;
-use BestIt\Sniffs\DefaultSniffIntegrationTestTrait;
+use BestIt\Sniffs\SniffCorrectFilesTrait;
 use BestIt\Sniffs\TestTokenRegistrationTrait;
+use BestIt\SniffTestCase;
 use PHP_CodeSniffer\Sniffs\Sniff;
+use PHPUnit\Framework\Attributes\DataProvider;
+
 use function defined;
 
 /**
@@ -16,17 +18,15 @@ use function defined;
  * @author blange <bjoern.lange@bestit-online.de>
  * @package BestIt\Sniffs\Commenting
  */
-abstract class AbstractDocSniffsTest extends SniffTestCase
+abstract class AbstractDocSniffTestCase extends SniffTestCase
 {
-    use DefaultSniffIntegrationTestTrait;
+    use SniffCorrectFilesTrait;
     use TestTokenRegistrationTrait;
 
     /**
      * The tested class.
      *
      * We use this var to reduce the hard dependencies on internals from a specific slevomat version.
-     * - String 1
-     * - String 2
      *
      * @var Sniff|null
      */
@@ -37,30 +37,29 @@ abstract class AbstractDocSniffsTest extends SniffTestCase
      *
      * @return array
      */
-    public function getRequiredConstantAsserts(): array
+    public static function getRequiredConstantAsserts(): array
     {
         return [
-            'CODE_NO_LINE_AFTER_DOC_COMMENT' => ['CODE_NO_LINE_AFTER_DOC_COMMENT', 'NoLineAfterDocComment'],
-            'CODE_NO_SUMMARY' => ['CODE_NO_SUMMARY', 'NoSummary'],
-            'CODE_SUMMARY_TOO_LONG' => ['CODE_SUMMARY_TOO_LONG', 'SummaryTooLong'],
-            'CODE_DOC_COMMENT_UC_FIRST' => ['CODE_DOC_COMMENT_UC_FIRST', 'DocCommentUcFirst'],
+            'CODE_NO_LINE_AFTER_DOC_COMMENT' => ['CODE_NO_LINE_AFTER_DOC_COMMENT'],
+            'CODE_NO_SUMMARY' => ['CODE_NO_SUMMARY'],
+            'CODE_SUMMARY_TOO_LONG' => ['CODE_SUMMARY_TOO_LONG'],
+            'CODE_DOC_COMMENT_UC_FIRST' => ['CODE_DOC_COMMENT_UC_FIRST'],
         ];
     }
 
     /**
      * Checks if the api is extended.
      *
-     * @dataProvider getRequiredConstantAsserts
      * @param string $constant The name of the constant.
      *
      * @return void
      */
+    #[DataProvider('getRequiredConstantAsserts')]
     public function testRequiredConstants(string $constant): void
     {
         static::assertTrue(
-
             defined(get_class($this->testedObject) . '::' . $constant),
-            'Constant ' . $constant . ' is missing.'
+            'Constant ' . $constant . ' is missing.',
         );
     }
 }

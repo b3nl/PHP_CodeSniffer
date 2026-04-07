@@ -4,7 +4,8 @@ declare(strict_types=1);
 
 namespace BestIt\Sniffs\Commenting;
 
-use BestIt\Sniffs\DefaultSniffIntegrationTestTrait;
+use BestIt\Sniffs\SniffCorrectFilesTrait;
+use BestIt\Sniffs\SniffErrorFilesTrait;
 use BestIt\Sniffs\TestTokenRegistrationTrait;
 use BestIt\SniffTestCase;
 use BestIt\TestRequiredConstantsTrait;
@@ -25,7 +26,8 @@ class EmptyLinesDocSniffTest extends SniffTestCase
 {
     use TestTokenRegistrationTrait;
     use TestRequiredConstantsTrait;
-    use DefaultSniffIntegrationTestTrait;
+    use SniffCorrectFilesTrait;
+    use SniffErrorFilesTrait;
 
     /**
      * Get the expected tokens.
@@ -44,7 +46,7 @@ class EmptyLinesDocSniffTest extends SniffTestCase
      *
      * @return array
      */
-    public function getRequiredConstantAsserts(): array
+    public static function getRequiredConstantAsserts(): array
     {
         return [
             'CODE_EMPTY_LINES_FOUND' => ['CODE_EMPTY_LINES_FOUND', 'EmptyLinesFound'],

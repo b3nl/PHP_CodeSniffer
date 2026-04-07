@@ -4,7 +4,8 @@ declare(strict_types=1);
 
 namespace BestIt\Sniffs\Formatting;
 
-use BestIt\Sniffs\DefaultSniffIntegrationTestTrait;
+use BestIt\Sniffs\SniffCorrectFilesTrait;
+use BestIt\Sniffs\SniffErrorFilesTrait;
 use BestIt\SniffTestCase;
 use BestIt\TestRequiredConstantsTrait;
 use SlevomatCodingStandard\Sniffs\Whitespaces\DuplicateSpacesSniff;
@@ -17,7 +18,8 @@ use SlevomatCodingStandard\Sniffs\Whitespaces\DuplicateSpacesSniff;
  */
 class ForbidDoubledWhitespaceSniffTest extends SniffTestCase
 {
-    use DefaultSniffIntegrationTestTrait;
+    use SniffCorrectFilesTrait;
+    use SniffErrorFilesTrait;
     use TestRequiredConstantsTrait;
 
     /**
@@ -25,7 +27,7 @@ class ForbidDoubledWhitespaceSniffTest extends SniffTestCase
      *
      * @return iterable
      */
-    public function getRequiredConstantAsserts(): iterable
+    public static function getRequiredConstantAsserts(): iterable
     {
         return [
             'CODE_DUPLICATE_SPACES' => [

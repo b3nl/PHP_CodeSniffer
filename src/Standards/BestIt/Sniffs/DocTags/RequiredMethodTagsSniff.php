@@ -6,8 +6,10 @@ namespace BestIt\Sniffs\DocTags;
 
 use BestIt\Sniffs\FunctionRegistrationTrait;
 use SlevomatCodingStandard\Helpers\FunctionHelper;
+
 use function in_array;
 use function str_repeat;
+
 use const T_FUNCTION;
 use const T_STRING;
 

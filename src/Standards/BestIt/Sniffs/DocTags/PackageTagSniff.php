@@ -6,6 +6,7 @@ namespace BestIt\Sniffs\DocTags;
 
 use BestIt\CodeSniffer\Helper\TokenHelper;
 use SlevomatCodingStandard\Helpers\NamespaceHelper;
+
 use const T_DOC_COMMENT_STRING;
 use const T_NAMESPACE;
 
