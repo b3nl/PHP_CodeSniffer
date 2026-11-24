@@ -141,7 +141,7 @@ The base for the BestIt Standard is [PSR-12](https://github.com/php-fig/fig-stan
 | BestIt.DocTags.ThrowsTag.TagContentFormatInvalid | You MUST provide a special tag format. | no |
 | BestIt.DocTags.VarTag.TagContentFormatInvalid | You MUST provide a type for your var tag. | no |
 | BestIt.DocTags.VersionTag.TagContentFormatInvalid | If you provide a version tag, you MUST provide it in [semver 2.0-Format](https://semver.org) with Major.Minor.Patch-Version . | no |
-| BestIt.Formatting.AlphabeticClassContent.SortAlphabetically | You SHOULD sort you constants, methods and properties alphabetically. | no |
+| BestIt.Formatting.AlphabeticClassContent.SortAlphabetically | You SHOULD sort your constants, methods and properties alphabetically, each kind on its own. | no |
 | BestIt.Formatting.AlphabeticallySortedUses.IncorrectlyOrderedUses | You MUST provide your imports in alphabetically order, PSR-12 compatible. | no |
 | (BestIt.Formatting.NoWhitespaceAfterClassOpening.IncorrectEmptyLinesAfterOpeningBrace | There MUST be no lines after the opening brace. | no |
 | (BestIt.Formatting.NoWhitespaceAfterClassOpening.IncorrectEmptyLinesBeforeClosingBrace | There MUST be no lines before the closing brace. | no |
