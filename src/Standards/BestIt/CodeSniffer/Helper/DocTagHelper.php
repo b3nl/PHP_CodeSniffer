@@ -23,18 +23,18 @@ use const T_DOC_COMMENT_TAG;
 class DocTagHelper
 {
     /**
-     * The stating token of the comment.
-     *
-     * @var array
-     */
-    private array $token;
-
-    /**
      * The PHP CS file
      *
      * @var File
      */
     private File $file;
+
+    /**
+     * The stating token of the comment.
+     *
+     * @var array
+     */
+    private array $token;
 
     /**
      * The token stack from php cs file.
